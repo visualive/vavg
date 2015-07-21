@@ -1,6 +1,6 @@
 #!/bin/sh
 PROGNAME=$(basename $0)
-VERSION="1.0.0"
+VERSION="1.0.1"
 
 usage() {
     echo "Usage: $PROGNAME [OPTIONS] FILE"
@@ -177,6 +177,14 @@ if [ "$FLAG_i" ]; then
     rm -rf ${latest}.zip
     cp -rf ./vccw-${latest}/* ./
     rm -rf ./vccw-${latest}/
+
+    if ! vagrant plugin list | grep -o "vagrant-hostsupdater" >/dev/null; then
+        vagrant plugin install vagrant-hostsupdater
+    fi
+
+    if ! vagrant plugin list | grep -o "vagrant-share" >/dev/null; then
+        vagrant plugin install vagrant-share
+    fi
 
     echo "VAVG のインストールが完了しました。"
 fi
