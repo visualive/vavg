@@ -42,50 +42,66 @@ do
 done
 
 if [ "$FLAG_i" ]; then
-    latest=`curl -sI https://github.com/vccw-team/vccw/releases/latest | awk -F'/' '/^Location:/{print $NF}' | tr -d '\r'`
-    wget https://github.com/vccw-team/vccw/archive/${latest}.zip
-
-    if [ ! -e ${latest}.zip ];
-    then
-        echo "VCCW がダウンロードできませんでした。"
-        exit 1
-    fi
-
     unzip ${latest}.zip -d ./
     rm -rf ${latest}.zip
     cp -rf ./vccw-${latest}/* ./
     rm -rf ./vccw-${latest}/
 
-    if [ ! -x "`which vagrant`" ] && [ ! -x "`which npm`" ] && [ ! -x "`which convert`" ] && [ ! -x "`which ruby`" ] && [ ! -x "`which sass`" ] && [ ! -x "`which compass`" ]; then
-        echo "Vagrant、Node.js、ImageMagick、Ruby、Sass、Compass がインストールされていません。"
-        exit 1
-    fi
-
     if [ ! -x "`which vagrant`" ]; then
         echo "Vagrant がインストールされていません。"
+        echo ""
     fi
 
-    if [ ! -x "`which npm`" ]; then
-        echo "Node.js がインストールされていません。"
+    if [ ! -x "`which node`" ] || [ ! -x "`which npm`" ]; then
+        echo "Node.js または npm コマンドがインストールされていません。"
+        echo "npm コマンドは、通常 Node.js と一緒にインストールされます。"
+        echo ""
+    fi
+
+    if [ ! -x "`which node`" ] || [ ! -x "`which gem`" ]; then
+        echo "Ruby または gem コマンドがインストールされていません。"
+        echo "gem コマンドは、通常 Ruby と一緒にインストールされます。"
+        echo ""
     fi
 
     if [ ! -x "`which convert`" ]; then
         echo "ImageMagick がインストールされていません。"
-    fi
-
-    if [ ! -x "`which ruby`" ]; then
-        echo "Ruby がインストールされていません。"
+        echo ""
     fi
 
     if [ ! -x "`which sass`" ]; then
-        echo "Sass がインストールされていません。"
+        if [ ! -x "`which sass`" ] && [ -x "`which gem`" ]; then
+            FLAG_sass=1
+        fi
+
+        if [ ! -x "`which sass`" ] && [ -x "`which gem`" ] && [ "$(uname)" == "Darwin" ]; then
+            sudo gem install sass
+        elif [ ! -x "`which sass`" ] && [ -x "`which gem`" ]; then
+            gem install sass
+        fi
+
+        if [ "$FLAG_sass" ]; then
+            echo "Sass のインストールを試みましたが、インストールに失敗しました。"
+        fi
     fi
 
     if [ ! -x "`which compass`" ]; then
-        echo "Compass がインストールされていません。"
+        if [ ! -x "`which compass`" ] && [ -x "`which gem`" ]; then
+            FLAG_compass=1
+        fi
+
+        if [ ! -x "`which compass`" ] && [ -x "`which gem`" ] && [ "$(uname)" == "Darwin" ]; then
+            sudo gem install compass
+        elif [ ! -x "`which compass`" ] && [ -x "`which gem`" ]; then
+            gem install compass
+        fi
+
+        if [ "$FLAG_compass" ]; then
+            echo "Sass のインストールを試みましたが、インストールに失敗しました。"
+        fi
     fi
 
-    if [ ! -x "`which vagrant`" ] || [ ! -x "`which npm`" ] || [ ! -x "`which convert`" ] || [ ! -x "`which ruby`" ] || [ ! -x "`which sass`" ] || [ ! -x "`which compass`" ]; then
+    if [ ! -x "`which vagrant`" ] || [ ! -x "`which node`" ] || [ ! -x "`which npm`" ] || [ ! -x "`which ruby`" ] || [ ! -x "`which gem`" ] || [ ! -x "`which convert`" ] || [ ! -x "`which sass`" ] || [ ! -x "`which compass`" ]; then
         exit 1
     fi
 
@@ -95,10 +111,20 @@ if [ "$FLAG_i" ]; then
         npm install bower –g
     fi
 
+    if [ ! -x "`which bower`" ]; then
+        echo "Bower のインストールを試みましたが、インストールに失敗しました。"
+        exit 1
+    fi
+
     if [ ! -x "`which gulp`" ] && [ "$(uname)" == "Darwin" ]; then
         sudo npm install gulp –g
-    elif [ ! -x "`which bower`" ]; then
+    elif [ ! -x "`which gulp`" ]; then
         npm install gulp –g
+    fi
+
+    if [ ! -x "`which gulp`" ]; then
+        echo "Gulp のインストールを試みましたが、インストールに失敗しました。"
+        exit 1
     fi
 
     if [ ! -e bower.json ]; then
@@ -126,6 +152,7 @@ if [ "$FLAG_i" ]; then
     fi
 
     bower install
+
     if [ "$(uname)" == "Darwin" ]; then
         sudo npm install
     else
@@ -133,6 +160,23 @@ if [ "$FLAG_i" ]; then
     fi
 
     gulp mkdir
+
+    if [ ! -x "`which VBoxManage`" ]; then
+        echo "VirtualBox がインストールされていません。"
+        echo "VirtualBox 4.3.30 をインストールしてください。"
+        echo "Download: https://www.virtualbox.org/wiki/Download_Old_Builds_4_3"
+        echo "※OS X の場合で Homebrew を利用している場合、Homebrew cask でインストール可能です。"
+        exit 1
+    fi
+
+    latest=`curl -sI https://github.com/vccw-team/vccw/releases/latest | awk -F'/' '/^Location:/{print $NF}' | tr -d '\r'`
+    wget https://github.com/vccw-team/vccw/archive/${latest}.zip
+
+    if [ ! -e ${latest}.zip ];
+    then
+        echo "VCCW をダウンロードできませんでした。"
+        exit 1
+    fi
 
     echo "VAVG のインストールが完了しました。"
 fi
