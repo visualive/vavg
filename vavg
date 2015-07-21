@@ -42,11 +42,6 @@ do
 done
 
 if [ "$FLAG_i" ]; then
-    unzip ${latest}.zip -d ./
-    rm -rf ${latest}.zip
-    cp -rf ./vccw-${latest}/* ./
-    rm -rf ./vccw-${latest}/
-
     if [ ! -x "`which vagrant`" ]; then
         echo "Vagrant がインストールされていません。"
         echo ""
@@ -177,6 +172,11 @@ if [ "$FLAG_i" ]; then
         echo "VCCW をダウンロードできませんでした。"
         exit 1
     fi
+
+    unzip ${latest}.zip -d ./
+    rm -rf ${latest}.zip
+    cp -rf ./vccw-${latest}/* ./
+    rm -rf ./vccw-${latest}/
 
     echo "VAVG のインストールが完了しました。"
 fi
