@@ -41,3 +41,9 @@ $ ./vavg -i -s
 
 * OSX: 10.10.5
 * Windows: not tested
+
+## Change log
+* v1.0.1  
+コマンドチェック、Vagrant plugin のインストールを追加。
+* v1.0.0  
+First commit.
