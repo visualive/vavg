@@ -20,10 +20,15 @@ VisuAlive + VCCW + Gulp (vavg)
 
 ## How to use
 
-### Install
+VAVG に実行権限を付与します。
 
 ```
 $ chmod u+x ./vavg
+```
+
+### Install
+
+```
 $ ./vavg -i
 ```
 
