@@ -1,0 +1,57 @@
+#
+# Virtual Machine Settings
+#
+memory: 2018
+cpus: 2
+
+#
+# Network Settings
+#
+hostname: vavg.example.com
+ip: 192.168.33.10
+sync_folder: '.'
+
+#
+# WordPress Database
+#
+db_prefix: wp_
+db_host: 192.168.33.10
+
+#
+# WordPress Settings
+#
+lang: ja
+
+#
+# The values of wp-config.php
+#
+force_ssl_admin: false
+wp_debug: true
+savequeries: true
+
+#
+# WordPress Default Theme
+# Theme's slug or url to the theme's .zip.
+#
+theme: ''
+
+#
+# WordPress Theme name
+#
+themeDirName: 'vavg'
+
+#
+# Theme unit testing
+#
+theme_unit_test: true
+theme_unit_test_uri: https://raw.githubusercontent.com/jawordpressorg/theme-test-data-ja/master/wordpress-theme-test-date-ja.xml
+
+#
+# WordPress Default Plugins
+# Plugin's slug or url to the plugin's slug.
+#
+plugins:
+  - ajax-thumbnail-rebuild
+  - dynamic-hostname
+  - developer
+  - wp-sweep

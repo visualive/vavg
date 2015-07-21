@@ -1,0 +1,21 @@
+/*!
+ Theme Name: VAVG
+ Version: 1.0.0
+ Description: VAVG WordPress Theme by KUCKLU and VisuAlive
+ Author: kuck1u
+ Author URI: http://visualive.jp/
+ Theme URI: http://visualive.jp/
+ License: GNU General Public License version 2.0 later
+ License URI: http://www.gnu.org/licenses/gpl-2.0.html
+ Tags: light, responsive-layout, custom-background, threaded-comments, custom-menu, featured-images, full-width-template, theme-options, translation-ready
+*/
+
+@import "functions";
+@import "settings";
+@import "normalize";
+@import "genericons";
+@import "foundation/components/visibility";
+@import "foundation/components/grid";
+@import "foundation/components/block-grid";
+@import "slick";
+@import "slick-theme";

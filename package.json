@@ -1,0 +1,38 @@
+{
+  "name": "VAVG",
+  "description": "",
+  "version": "1.0.0",
+  "license": "GNU General Public License version 2.0 later",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kuck1u/vavg.git"
+  },
+  "devDependencies": {
+    "browser-sync": "^2.7.13",
+    "fs": "0.0.2",
+    "gulp": "^3.9.0",
+    "gulp-cache": "^0.2.10",
+    "gulp-compass": "^2.1.0",
+    "gulp-compressor": "^0.1.0",
+    "gulp-concat": "^2.6.0",
+    "gulp-csscomb": "^3.0.6",
+    "gulp-ect": "^1.3.1",
+    "gulp-image-resize": "^0.6.0",
+    "gulp-imagemin": "^2.3.0",
+    "gulp-load-plugins": "^1.0.0-rc",
+    "gulp-pleeease": "^1.2.0",
+    "gulp-plumber": "^1.0.1",
+    "gulp-prettify": "^0.3.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-replace": "^0.5.3",
+    "gulp-shell": "^0.4.2",
+    "gulp-uglify": "^1.2.0",
+    "imagemin-gifsicle": "^4.2.0",
+    "imagemin-jpegoptim": "^4.0.0",
+    "imagemin-optipng": "^4.3.0",
+    "imagemin-pngquant": "^4.1.2",
+    "imagemin-svgo": "^4.1.2",
+    "run-sequence": "^1.1.1",
+    "js-yaml": "^3.3.1"
+  }
+}
