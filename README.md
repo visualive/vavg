@@ -13,7 +13,7 @@ VisuAlive + VCCW + Gulp (vavg)
 * [Ruby](http://rubyinstaller.org/)
 * [ImageMagic](http://www.imagemagick.org/script/binary-releases.php#windows)
 
-# Mac OS X
+### Mac OS X
 * [Mac OSXでのWeb開発環境構築](http://designinglabo.com/1019/mac-os-x-web-development-environment.html)
 
 ## How to use
