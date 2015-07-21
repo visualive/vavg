@@ -92,7 +92,7 @@ if [ "$FLAG_i" ]; then
         fi
 
         if [ "$FLAG_compass" ]; then
-            echo "Sass のインストールを試みましたが、インストールに失敗しました。"
+            echo "Compass のインストールを試みましたが、インストールに失敗しました。"
         fi
     fi
 
@@ -156,12 +156,27 @@ if [ "$FLAG_i" ]; then
 
     gulp mkdir
 
-    if [ ! -x "`which VBoxManage`" ]; then
-        echo "VirtualBox がインストールされていません。"
-        echo "VirtualBox 4.3.30 をインストールしてください。"
-        echo "Download: https://www.virtualbox.org/wiki/Download_Old_Builds_4_3"
-        echo "※OS X の場合で Homebrew を利用している場合、Homebrew cask でインストール可能です。"
-        exit 1
+    if [ "$(uname)" == "Darwin" ]; then
+        sudo npm install
+    else
+        npm install
+    fi
+
+    if [ "$(uname)" == "Darwin" ]; then
+        if [ ! -x "`which VBoxManage`" ]; then
+            echo "VirtualBox がインストールされていません。"
+            echo "VirtualBox 4.3.30 をインストールしてください。"
+            echo "Download: https://www.virtualbox.org/wiki/Download_Old_Builds_4_3"
+            echo "※OS X の場合で Homebrew を利用している場合、Homebrew cask でもインストール可能です。"
+            exit 1
+        fi
+    else
+        if [ ! -e "C:\Program Files\Oracle\VirtualBox\VBoxManage.exe" ]; then
+            echo "VirtualBox がインストールされていません。"
+            echo "VirtualBox 4.3.30 をインストールしてください。"
+            echo "Download: https://www.virtualbox.org/wiki/Download_Old_Builds_4_3"
+            exit 1
+        fi
     fi
 
     latest=`curl -sI https://github.com/vccw-team/vccw/releases/latest | awk -F'/' '/^Location:/{print $NF}' | tr -d '\r'`
