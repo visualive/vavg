@@ -57,6 +57,8 @@ $ ./vavg -i -s
 * Windows: not tested
 
 ## Change log
+* v1.0.3  
+空のテーマファイル群を追加。その他諸々修正。
 * v1.0.2  
 インストールモード時に、vagrant up を行うように変更。
 * v1.0.1  
