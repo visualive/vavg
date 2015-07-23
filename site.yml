@@ -34,7 +34,7 @@ savequeries: true
 # WordPress Default Theme
 # Theme's slug or url to the theme's .zip.
 #
-theme: ''
+theme: 'vavg'
 
 #
 # WordPress Theme name
