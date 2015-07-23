@@ -42,6 +42,8 @@ $ vi ./site.yml
 $ chmod u+x ./vavg && ./vavg -i -s
 ```
 
+[Demo movie / Youtube](https://www.youtube.com/watch?v=Sg5BlZtUv0w)
+
 ### Options
 #### Install mode
 
