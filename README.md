@@ -34,12 +34,12 @@ VAVG のダウンロードから初回起動
 $ cd /Users/YOURNAME/PhpstormProjects/TEST/
 # VCCW + Gulp 1発起動スクリプト VAVG をダウンロード
 $ wget http://github.com/kuck1u/vavg/archive/master.zip && unzip ./master.zip && rm -rf ./master.zip && mv ./vavg-master/* ./ && rm -rf ./vavg-master
-# テーマファイル名をお好みに編集
-vi ./_sources/scss/style.scss
-# VCCW の設定ファイルをお好みに編集
-vi ./site.yml
-$ VAVG のインストールと起動
-chmod u+x ./vavg && ./vavg -i -s
+# テーマファイル名を編集
+$ vi ./_sources/scss/style.scss
+# VCCW の設定ファイルを編集
+$ vi ./site.yml
+# VAVG のインストールと起動
+$ chmod u+x ./vavg && ./vavg -i -s
 ```
 
 ### Options
