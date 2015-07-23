@@ -20,7 +20,8 @@ db_host: 192.168.33.10
 #
 # WordPress Settings
 #
-lang: ja
+version: latest
+lang: en_US
 
 #
 # The values of wp-config.php

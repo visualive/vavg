@@ -207,7 +207,7 @@ gulp.task('clean', $.shell.task(
 /*****************************
  ******  Make Directory  *****
  *****************************/
-gulp.task('mkdir', $.shell.task(
+gulp.task('vavg', $.shell.task(
 	[
 		'mkdir -p ' + rootPath,
 		'mkdir -p ' + sourcePath + '/scss',
@@ -217,7 +217,10 @@ gulp.task('mkdir', $.shell.task(
 		'mkdir -p ' + assetsPath + '/js',
 		'mkdir -p ' + assetsPath + '/img',
 		'mkdir -p ' + assetsPath + '/font',
-		'mv -f ' + __dirname + '/_sources/* ' + sourcePath + '/',
+		'mv -f ' + __dirname + '/_sources/scss ' + sourcePath + '/',
+		'mv -f ' + __dirname + '/_sources/js ' + sourcePath + '/',
+		'mv -f ' + __dirname + '/_sources/font ' + sourcePath + '/',
+		'mv -f ' + __dirname + '/_sources/wordpress-theme/* ' + rootPath + '/',
 		'rm -rf ' + __dirname + '/_sources/'
 	]
 ));

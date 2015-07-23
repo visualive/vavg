@@ -1,6 +1,6 @@
 #!/bin/sh
 PROGNAME=$(basename $0)
-VERSION="1.0.2"
+VERSION="1.0.3"
 
 usage() {
     echo "Usage: $PROGNAME [OPTIONS] FILE"
@@ -154,7 +154,7 @@ if [ "$FLAG_i" ]; then
         npm install
     fi
 
-    gulp mkdir
+    gulp vavg
 
     if [ "$(uname)" == "Darwin" ]; then
         sudo npm install
@@ -202,12 +202,19 @@ if [ "$FLAG_i" ]; then
     fi
 
     vagrant up
-    vagrant halt
+
+    if [ ! "$FLAG_s" ]; then
+        vagrant halt
+    fi
     echo "VAVG のインストールが完了しました。"
 fi
 
 if [ "$FLAG_s" ]; then
     echo "VAVG を起動します。"
-    vagrant up
+
+    if [ ! "$FLAG_i" ]; then
+        vagrant up
+    fi
+
     gulp
 fi
