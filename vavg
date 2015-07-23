@@ -1,6 +1,6 @@
 #!/bin/sh
 PROGNAME=$(basename $0)
-VERSION="1.0.1"
+VERSION="1.0.2"
 
 usage() {
     echo "Usage: $PROGNAME [OPTIONS] FILE"
@@ -201,6 +201,8 @@ if [ "$FLAG_i" ]; then
         vagrant plugin install vagrant-share
     fi
 
+    vagrant up
+    vagrant halt
     echo "VAVG のインストールが完了しました。"
 fi
 

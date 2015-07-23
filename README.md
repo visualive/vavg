@@ -27,10 +27,10 @@ Windows での移行の作業は全て、Cygwin で行ってください。た�
 
 ## How to use
 
-VAVG に実行権限を付与します。
+VAVG のダウンロードから初回起動
 
 ```
-$ chmod u+x ./vavg
+$ wget http://github.com/kuck1u/vavg/archive/master.zip && unzip ./master.zip && rm -rf ./master.zip && mv ./vavg-master/* ./ && rm -rf ./vavg-master && chmod u+x ./vavg && ./vavg -i -s
 ```
 
 ### Install
@@ -57,6 +57,8 @@ $ ./vavg -i -s
 * Windows: not tested
 
 ## Change log
+* v1.0.2  
+インストールモード時に、vagrant up を行うように変更。
 * v1.0.1  
 コマンドチェック、Vagrant plugin のインストールを追加。
 * v1.0.0  
