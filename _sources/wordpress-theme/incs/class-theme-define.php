@@ -42,6 +42,7 @@ class VISUALIVE_THEME_DEFINE extends VISUALIVE_SINGLETON {
 	 * @var string
 	 */
 	public $name;
+	public $name_raw;
 
 	/**
 	 * テーマディレクトリのURL
@@ -78,7 +79,8 @@ class VISUALIVE_THEME_DEFINE extends VISUALIVE_SINGLETON {
 	protected function __construct( $settings = array() ) {
 		$theme             = get_file_data( STYLESHEETPATH . '/style.css', array( 'name' => 'Theme Name', 'version' => 'Version', 'text_domain' => 'Text domain', 'domain_path' => 'Domain path' ), 'theme' );
 		$this->version     = $theme['version'];
-		$this->name        = $theme['name'];
+		$this->name_raw    = $theme['name'];
+		$this->name        = str_replace( '--', '-file', preg_replace( '/\A-/u', 'theme-', preg_replace( array( '/[ぁ-んァ-ンヶー一-龠]/u', '/[^a-zA-Z0-9]/u' ), array( '', '-' ), mb_strtolower( $this->name_raw ) ) ) );
 		$this->uri         = get_stylesheet_directory_uri();
 		$this->path        = get_stylesheet_directory();
 		$this->text_domain = $theme['text_domain'];

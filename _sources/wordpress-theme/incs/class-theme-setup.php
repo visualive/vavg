@@ -34,7 +34,35 @@ class VISUALIVE_THEME_SETUP extends VISUALIVE_SINGLETON {
 	 *
 	 * @var object
 	 */
-	private $theme = null;
+	protected $theme    = null;
+
+	/**
+	 * Feeds
+	 *
+	 * @var array
+	 */
+	protected $feeds    = array();
+
+	/**
+	 * This theme supports all available post formats by default.
+	 *
+	 * @var array
+	 */
+	protected $formats  = array();
+
+	/**
+	 * Switches default core markup to output valid HTML5.
+	 *
+	 * @var array
+	 */
+	protected $html5    = array();
+
+	/**
+	 * Theme supports.
+	 *
+	 * @var array
+	 */
+	protected $supports = array();
 
 	/**
 	 * Sets up theme defaults and registers support for various WordPress features.
@@ -45,8 +73,11 @@ class VISUALIVE_THEME_SETUP extends VISUALIVE_SINGLETON {
 	 * @since CherryBlossom 1.0.0
 	 */
 	protected function __construct( $settings = array() ) {
-		$this->theme       = VISUALIVE_THEME_DEFINE::instance();
-		$this->theme->name = str_replace( array( ' ' ), array( '-' ), mb_strtolower( $this->theme->name ) );
+		$this->theme    = VISUALIVE_THEME_DEFINE::instance();
+		$this->feeds    = array( 'rss2_head', 'commentsrss2_head', 'rss_head', 'rdf_header', 'atom_head', 'comments_atom_head', 'opml_head', 'app_head' );
+		$this->formats  = array( 'aside', 'audio', 'chat', 'gallery', 'image', 'link', 'quote', 'status', 'video' );
+		$this->html5    = array( 'search-form', 'comment-form', 'comment-list', 'gallery', 'caption' );
+		$this->supports = array( 'automatic-feed-links', 'title-tag', 'post-thumbnails' );
 
 		/**
 		 * Remove emoji scripts.
@@ -68,7 +99,7 @@ class VISUALIVE_THEME_SETUP extends VISUALIVE_SINGLETON {
 		remove_action( 'wp_head', 'wp_shortlink_wp_head'            );
 		remove_action( 'wp_head', 'jetpack_og_tags'                 );
 		remove_action( 'wp_head', 'wp_generator'                    );
-		foreach ( array( 'rss2_head', 'commentsrss2_head', 'rss_head', 'rdf_header', 'atom_head', 'comments_atom_head', 'opml_head', 'app_head' ) as $feed ) {
+		foreach ( $this->feeds as $feed ) {
 			remove_action( $feed, 'the_generator' );
 		}
 
@@ -76,40 +107,20 @@ class VISUALIVE_THEME_SETUP extends VISUALIVE_SINGLETON {
 		 * This theme supports all available post formats by default.
 		 * See https://codex.wordpress.org/Post_Formats
 		 */
-		add_theme_support(
-			'post-formats', array(
-				'aside', 'audio', 'chat', 'gallery', 'image', 'link', 'quote', 'status', 'video'
-			)
-		);
-
-		/*
-		 * Adds RSS feed links to <head> for posts and comments.
-		 */
-		add_theme_support( 'automatic-feed-links' );
+		add_theme_support( 'post-formats', $this->formats );
 
 		/**
 		 * Switches default core markup for search form, comment form,
 		 * and comments to output valid HTML5.
 		 */
-		add_theme_support(
-			'html5', array(
-				'search-form', 'comment-form', 'comment-list', 'gallery', 'caption'
-			)
-		);
+		add_theme_support( 'html5', $this->html5 );
 
 		/**
-		 * Let WordPress manage the document title.
-		 * By adding theme support, we declare that this theme does not use a
-		 * hard-coded <title> tag in the document head, and expect WordPress to
-		 * provide it for us.
+		 * Theme supports.
 		 */
-		add_theme_support( 'title-tag' );
-
-		/**
-		 * This theme uses a custom image size for featured images, displayed on
-		 * "standard" posts and pages.
-		 */
-		add_theme_support( 'post-thumbnails' );
+		foreach ( $this->supports as $support ) {
+			add_theme_support( $support );
+		}
 
 		/**
 		 * Change front page title.
@@ -235,7 +246,7 @@ class VISUALIVE_THEME_SETUP extends VISUALIVE_SINGLETON {
 	public function script_loader_src( $src ) {
 		$str = '?ver=' .get_bloginfo( 'version' );
 
-		if ( strpos( $src, $str ) ) {
+		if ( !is_admin() && strpos( $src, $str ) ) {
 			$src = add_query_arg( 'ver', $this->theme->version, $src );
 		}
 		return $src;
