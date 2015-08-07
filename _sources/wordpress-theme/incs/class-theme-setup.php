@@ -66,8 +66,11 @@ class VISUALIVE_THEME_SETUP extends VISUALIVE_SINGLETON {
 		remove_action( 'wp_head', 'wlwmanifest_link'                );
 		remove_action( 'wp_head', 'adjacent_posts_rel_link_wp_head' );
 		remove_action( 'wp_head', 'wp_shortlink_wp_head'            );
-		remove_action( 'wp_head', 'wp_generator'                    );
 		remove_action( 'wp_head', 'jetpack_og_tags'                 );
+		remove_action( 'wp_head', 'wp_generator'                    );
+		foreach ( array( 'rss2_head', 'commentsrss2_head', 'rss_head', 'rdf_header', 'atom_head', 'comments_atom_head', 'opml_head', 'app_head' ) as $feed ) {
+			remove_action( $feed, 'the_generator' );
+		}
 
 		/**
 		 * This theme supports all available post formats by default.
@@ -109,6 +112,11 @@ class VISUALIVE_THEME_SETUP extends VISUALIVE_SINGLETON {
 		add_theme_support( 'post-thumbnails' );
 
 		/**
+		 * Change front page title.
+		 */
+		add_filter( 'wp_title', array( &$this, 'wp_title' ), 0, 3 );
+
+		/**
 		 * Enqueue scripts and styles.
 		 */
 		add_action( 'wp_enqueue_scripts', array( &$this, 'wp_enqueue_scripts' ), 0       );
@@ -120,6 +128,24 @@ class VISUALIVE_THEME_SETUP extends VISUALIVE_SINGLETON {
 		 */
 		add_filter( 'body_class', array( &$this, 'body_class' ) );
 	}
+
+	/**
+	 * Change front page title.
+	 *
+	 * @param string $title       Page title.
+	 * @param string $sep         Title separator.
+	 * @param string $seplocation Location of the separator (left or right).
+	 *
+	 * @return string
+	 */
+	public function wp_title( $title, $sep, $seplocation ) {
+		if ( ( is_front_page() && is_page() ) || ( is_front_page() && is_home() ) ) {
+			$title = get_bloginfo( 'name', 'display' );
+		}
+
+		return $title;
+	}
+
 
 	/**
 	 * Enqueue scripts and styles.
