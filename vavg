@@ -1,6 +1,6 @@
 #!/bin/sh
 PROGNAME=$(basename $0)
-VERSION="1.0.3"
+VERSION="1.0.4"
 
 usage() {
     echo "Usage: $PROGNAME [OPTIONS] FILE"

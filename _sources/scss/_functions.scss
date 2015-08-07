@@ -51,7 +51,7 @@ $color-palette: (
  * @param {Map} $palette - palette
  *
  * @requires {function} color-diff
- * 
+ *
  * @return {List} list of diffs
  */
 @function palette-diff($palette) {
@@ -74,11 +74,11 @@ $color-palette: (
  *
  * @param {Color} $color - color to transform
  * @param {Map} $diff - diff map
- * 
+ *
  * @return {Color} transformed color
  */
 @function apply-diff($color, $diff) {
-  // We call the $key (function), 
+  // We call the $key (function),
   // passing the $color and the $value as parameters
   // e.g. `call(adjust-hue, #BADA55, 42)`
   @each $key, $value in $diff {

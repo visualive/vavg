@@ -11,11 +11,12 @@
     "browser-sync": "^2.7.13",
     "fs": "0.0.2",
     "gulp": "^3.9.0",
-    "gulp-cache": "^0.2.10",
+    "gulp-cached": "^1.1.0",
     "gulp-compass": "^2.1.0",
     "gulp-compressor": "^0.1.0",
     "gulp-concat": "^2.6.0",
     "gulp-csscomb": "^3.0.6",
+    "gulp-csso": "^1.0.0",
     "gulp-ect": "^1.3.1",
     "gulp-image-resize": "^0.6.0",
     "gulp-imagemin": "^2.3.0",
@@ -32,7 +33,7 @@
     "imagemin-optipng": "^4.3.0",
     "imagemin-pngquant": "^4.1.2",
     "imagemin-svgo": "^4.1.2",
-    "run-sequence": "^1.1.1",
-    "js-yaml": "^3.3.1"
+    "js-yaml": "^3.3.1",
+    "run-sequence": "^1.1.1"
   }
 }

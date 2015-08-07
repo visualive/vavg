@@ -17,12 +17,12 @@ var gulp        = require('gulp'),
 	gifsicle    = require('imagemin-gifsicle'),
 	svgo        = require('imagemin-svgo'),
 	img         = {
-					"pngQuality": "60-70",
-					"pngSpeed": 5,
-					"jpgQuality": 70,
-					"jpgProgressive": true,
-					"gifInterlaced": false
-				},
+		"pngQuality": "60-70",
+		"pngSpeed": 5,
+		"jpgQuality": 70,
+		"jpgProgressive": true,
+		"gifInterlaced": false
+	},
 	browserSync = require('browser-sync'),
 	reload      = browserSync.reload,
 	runSequence = require('run-sequence'),
@@ -30,6 +30,7 @@ var gulp        = require('gulp'),
 	yml         = require('js-yaml'),
 	settings    = yml.safeLoad(fs.readFileSync('site.yml')),
 	rootPath    = __dirname + '/wp-content/themes/' + settings.themeDirName,
+	// rootPath    = __dirname + '/themes/' + settings.themeDirName,
 	sourcePath  = rootPath + '/_sources',
 	assetsPath  = rootPath + '/assets',
 	sources     = {
@@ -46,13 +47,13 @@ var gulp        = require('gulp'),
 		js:          [
 			__dirname + '/bower_components/fastclick/lib/fastclick.js',
 			__dirname + '/bower_components/modernizr/modernizr.js',
+			__dirname + '/bower_components/jquery-legacy/dist/jquery.min.js',
 			//__dirname + '/bower_components/foundation/js/foundation/foundation.js',
 			__dirname + '/bower_components/jQuery.mmenu/dist/js/jquery.mmenu.min.js',
 			__dirname + '/bower_components/shufflejs/dist/jquery.shuffle.min.js',
 			__dirname + '/bower_components/slick-carousel/slick/slick.min.js',
 			__dirname + '/bower_components/jquery.stellar/jquery.stellar.min.js',
 			__dirname + '/bower_components/jquery.mb.ytplayer/dist/jquery.mb.YTPlayer.min.js',
-			//sourcePath + '/js/jquery.heightLine.min.js'
 			sourcePath + '/js/**/*.js'
 		],
 		jsIE:        [
@@ -71,6 +72,7 @@ var gulp        = require('gulp'),
 gulp.task('scss', function(){
 	return gulp.src(sources.scss)
 		.pipe($.plumber())
+		.pipe($.cached('scss'))
 		.pipe($.compass({
 			config_file: 'config.rb',
 			comments:    false,
@@ -89,8 +91,13 @@ gulp.task('scss', function(){
 			pseudoElements: true,
 			sourcemaps: false,
 			next: false,
-			minifier: true
+			minifier: false
 		}))
+		.pipe($.rename({
+			suffix: '.min',
+			extname: '.css'
+		}))
+		.pipe($.csso())
 		.pipe(gulp.dest(sources.cssDestDir))
 		.pipe(reload({stream: true}));
 });
@@ -101,7 +108,13 @@ gulp.task('scss', function(){
 gulp.task('js', function(){
 	return gulp.src(sources.js)
 		.pipe($.plumber())
-		.pipe($.concat('script.min.js'))
+		.pipe($.cached('js'))
+		.pipe($.concat('script.js'))
+		.pipe(gulp.dest(sources.jsDestDir))
+		.pipe($.rename({
+			suffix: '.min',
+			extname: '.js'
+		}))
 		.pipe($.uglify({preserveComments: 'some'}))
 		.pipe(gulp.dest(sources.jsDestDir))
 		.pipe(reload({stream: true, once: true}));
@@ -109,7 +122,13 @@ gulp.task('js', function(){
 gulp.task('jsIE', function(){
 	return gulp.src(sources.jsIE)
 		.pipe($.plumber())
-		.pipe($.concat('ie.min.js'))
+		.pipe($.cached('jsie'))
+		.pipe($.concat('ie.js'))
+		.pipe(gulp.dest(sources.jsDestDir))
+		.pipe($.rename({
+			suffix: '.min',
+			extname: '.js'
+		}))
 		.pipe($.uglify({preserveComments: 'some'}))
 		.pipe(gulp.dest(sources.jsDestDir))
 		.pipe(reload({stream: true, once: true}));
@@ -121,29 +140,7 @@ gulp.task('jsIE', function(){
 gulp.task("img", function(){
 	return gulp.src(sources.img)
 		.pipe($.plumber())
-		.pipe($.cache($.imagemin({
-			use: [
-				pngquant({
-					quality: img.pngQuality,
-					speed: img.pngSpeed
-				}),
-				jpegoptim({
-					max: img.jpgQuality,
-					progressive: img.jpgProgressive,
-				}),
-				gifsicle({
-					interlaced: img.gifInterlaced,
-				}),
-				svgo()
-			]
-		})))
-		.pipe(gulp.dest(sources.imgDestDir))
-		.pipe(reload({stream: true}));
-});
-// Not cache.
-gulp.task("imgBuild", function(){
-	return gulp.src(sources.img)
-		.pipe($.plumber())
+		.pipe($.cached('image'))
 		.pipe($.imagemin({
 			use: [
 				pngquant({
@@ -152,16 +149,39 @@ gulp.task("imgBuild", function(){
 				}),
 				jpegoptim({
 					max: img.jpgQuality,
-					progressive: img.jpgProgressive,
+					progressive: img.jpgProgressive
 				}),
 				gifsicle({
-					interlaced: img.gifInterlaced,
+					interlaced: img.gifInterlaced
 				}),
 				svgo()
 			]
 		}))
-		.pipe(gulp.dest(sources.imgDestDir));
+		.pipe(gulp.dest(sources.imgDestDir))
+		.pipe(reload({stream: true}));
 });
+// Not cache.
+//gulp.task("imgBuild", function(){
+//	return gulp.src(sources.img)
+//		.pipe($.plumber())
+//		.pipe($.imagemin({
+//			use: [
+//				pngquant({
+//					quality: img.pngQuality,
+//					speed: img.pngSpeed
+//				}),
+//				jpegoptim({
+//					max: img.jpgQuality,
+//					progressive: img.jpgProgressive,
+//				}),
+//				gifsicle({
+//					interlaced: img.gifInterlaced,
+//				}),
+//				svgo()
+//			]
+//		}))
+//		.pipe(gulp.dest(sources.imgDestDir));
+//});
 
 /*******************
  ******  Font ******
@@ -169,6 +189,7 @@ gulp.task("imgBuild", function(){
 gulp.task('font', function(){
 	return gulp.src(sources.font)
 		.pipe($.plumber())
+		.pipe($.cached('font'))
 		.pipe(gulp.dest(sources.fontDestDir))
 		.pipe(reload({stream: true, once: true}));
 });
@@ -189,8 +210,8 @@ gulp.task('browserSyncReload', function() {
 /***************************
  ******  Cache clear  ******
  ***************************/
-gulp.task('clear', function ( i_done ) {
-	return $.cache.clearAll( i_done );
+gulp.task('clear', function () {
+	return $.cached.caches = {};
 });
 
 /********************
@@ -198,6 +219,7 @@ gulp.task('clear', function ( i_done ) {
  ********************/
 gulp.task('clean', $.shell.task(
 	[
+		'rm -rf ' + sources.cssDestDir + '/style*.css',
 		'rm -rf ' + assetsPath + '/js/*',
 		'rm -rf ' + assetsPath + '/img/*',
 		'rm -rf ' + assetsPath + '/font/*'
@@ -229,7 +251,7 @@ gulp.task('vavg', $.shell.task(
  ******  Build  ******
  *********************/
 gulp.task('build', function(){
-	return runSequence('clear', 'clean', ['scss', 'js', 'jsIE', 'imgBuild', 'font'] );
+	return runSequence('clean', ['scss', 'js', 'jsIE', 'imgBuild', 'font'], 'clear' );
 });
 
 /*********************
@@ -248,5 +270,6 @@ gulp.task('watch', function(){
  ******  Default task  ******
  ****************************/
 gulp.task('default', function(){
-	return runSequence('clear', 'clean', ['scss', 'js', 'jsIE', 'imgBuild', 'font'], 'browserSync', 'watch');
+	runSequence('clear');
+	return runSequence('clean', ['scss', 'js', 'jsIE', 'img', 'font'], 'browserSync', 'watch');
 });

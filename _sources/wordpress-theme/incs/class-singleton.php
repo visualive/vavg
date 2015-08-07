@@ -1,15 +1,14 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 /**
- * WordPress theme bootstrap
- * This file will works as bootstrap.
+ * WordPress theme singleton class.
  *
  * @package WordPress
- * @subpackage Your theme name
- * @author Your name <Your@email.address>
+ * @subpackage VisuAlive
+ * @author KUCKLU <kuck1u@visualive.jp>
  *
  *
- * Copyright (C) 2015  Your name.
+ * Copyright (C) 2015  KUCKLU and VisuAlive.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,24 +28,31 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  * http://www.gnu.org/licenses/gpl-2.0.txt
  */
 
-/**
- * オートローダー
- */
-spl_autoload_register( function( $class_name ) {
-    $_class_name = str_replace( array( 'VISUALIVE', 'YOURTHEMENAME', '_'), array( 'class', 'class', '-' ), $class_name );
-    $path        = __DIR__ . DIRECTORY_SEPARATOR . 'incs' . DIRECTORY_SEPARATOR . mb_strtolower( $_class_name ) . '.php';
+abstract class VISUALIVE_SINGLETON {
+	/**
+	 * Holds the singleton instance of this class
+	 *
+	 * @var array
+	 */
+	private static $instances = array();
 
-    if ( file_exists( $path ) ) {
-        require_once $path;
-    }
-} );
+	/**
+	 * Instance
+	 *
+	 * @param  array $settings
+	 * @return self
+	 */
+	public static function instance( $settings = array() ){
+		$class_name = get_called_class();
+		if( !isset( self::$instances[$class_name] ) ) {
+			self::$instances[$class_name] = new $class_name( $settings );
+		}
 
-/**
- * Theme sets up.
- */
-if ( !function_exists( 'yourthemename_setup' ) ) :
-    function yourthemename_setup() {
-        $cherryblossom = VISUALIVE_THEME_SETUP::instance();
-    }
-endif; // yourthemename_setup
-add_action( 'after_setup_theme', 'yourthemename_setup', 99999 );
+		return self::$instances[$class_name];
+	}
+
+	/**
+	 * This hook is called once any activated themes have been loaded.
+	 */
+	protected function __construct( $settings = array() ) {}
+}
