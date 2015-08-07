@@ -30,7 +30,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  */
 
 /**
- * オートローダー
+ * Autoloader.
  */
 spl_autoload_register( function( $class_name ) {
     $_class_name = str_replace( array( 'VISUALIVE', 'YOURTHEMENAME', '_'), array( 'class', 'class', '-' ), $class_name );
@@ -41,12 +41,20 @@ spl_autoload_register( function( $class_name ) {
     }
 } );
 
-/**
- * Theme sets up.
- */
 if ( !function_exists( 'yourthemename_setup' ) ) :
+    /**
+     * Theme sets up.
+     */
     function yourthemename_setup() {
-        $cherryblossom = VISUALIVE_THEME_SETUP::instance();
+        if ( !class_exists( 'YOURTHEMENAME' ) ) {
+            class YOURTHEMENAME extends VISUALIVE_THEME_SETUP {
+                protected function __construct() {
+                    parent::__construct();
+                }
+            }
+        }
+
+        $yourthemename = YOURTHEMENAME::instance();
     }
 endif; // yourthemename_setup
 add_action( 'after_setup_theme', 'yourthemename_setup', 99999 );
