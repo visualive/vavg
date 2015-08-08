@@ -160,14 +160,20 @@ class VISUALIVE_THEME_SETUP extends VISUALIVE_SINGLETON {
 		add_filter( 'wp_mail_from_name', array( &$this, 'wp_mail_from_name' ) );
 
 		/**
-		 * To hack the Yoast WordPress SEO plugin.
+		 * Display OGp prefix.
 		 */
-		if ( class_exists( 'WPSEO_Frontend' ) ) {
-			$this->wpseo = VISUALIVE_WPSEO_FRONTEND::get_instance();
-			remove_action( 'init', 'initialize_wpseo_front' );
-			add_filter( 'language_attributes', function ( $output ) {
-				return str_replace( ' prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#"', ' prefix="' . self::get_ogp_prefix() . '"', $output );
-			}, 99 );
+		add_filter( 'language_attributes', function ( $output ) {
+			return str_replace( ' prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#"', ' prefix="' . self::get_ogp_prefix() . '"', $output );
+		}, 99 );
+
+		/**
+		 * Remove All Yoast HTML Comments
+		 * https://gist.github.com/paulcollett/4c81c4f6eb85334ba076
+		 */
+		if (defined('WPSEO_VERSION')){
+			add_action('get_header',function (){ ob_start(function ($o){
+				return preg_replace('/\n?<.*?yoast.*?>/mi','',$o); }); });
+			add_action('wp_head',function (){ ob_end_flush(); }, 999);
 		}
 	}
 

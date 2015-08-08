@@ -4,11 +4,11 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  * WordPress theme functions.
  *
  * @package WordPress
- * @subpackage Your theme name
- * @author Your name <Your@email.address>
+ * @subpackage VisuAlive
+ * @author YOUR NAME <hello@email.address>
  *
  *
- * Copyright (C) 2015  Your name.
+ * Copyright (C) 2015 YOUR NAME.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,28 +32,32 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  * Autoloader.
  */
 spl_autoload_register( function( $class_name ) {
-    $_class_name = str_replace( array( 'VISUALIVE', 'YOURTHEMENAME', '_'), array( 'class', 'class', '-' ), $class_name );
-    $path        = __DIR__ . DIRECTORY_SEPARATOR . 'incs' . DIRECTORY_SEPARATOR . mb_strtolower( $_class_name ) . '.php';
+	if ( in_array( $class_name, $exclusion ) ) {
+		return;
+	}
 
-    if ( file_exists( $path ) ) {
-        require_once $path;
-    }
+	$_class_name = str_replace( array( 'VISUALIVE', 'CHERRYBLOSSOM', '_'), array( 'class', 'class', '-' ), $class_name );
+	$path        = __DIR__ . DIRECTORY_SEPARATOR . 'incs' . DIRECTORY_SEPARATOR . mb_strtolower( $_class_name ) . '.php';
+
+	if ( file_exists( $path ) ) {
+		require_once $path;
+	}
 } );
 
 /**
  * Theme sets up.
  */
-if ( !function_exists( 'yourthemename_setup' ) ) :
-    function yourthemename_setup() {
-        if ( !class_exists( 'YOURTHEMENAME' ) ) {
-            class YOURTHEMENAME extends VISUALIVE_THEME_SETUP {
-                protected function __construct() {
-                    parent::__construct();
-                }
-            }
-        }
+if ( !function_exists( 'cherryblossom_setup' ) ) :
+	function yourthemeslug_setup() {
+		if ( !class_exists( 'YOURTHEMESLUG' ) ) {
+			class YOURTHEMESLUG extends VISUALIVE_THEME_SETUP {
+				protected function __construct() {
+					parent::__construct();
+				}
+			}
+		}
 
-        $yourthemename = YOURTHEMENAME::instance();
-    }
-endif; // yourthemename_setup
-add_action( 'after_setup_theme', 'yourthemename_setup', 99999 );
+		$cherryblossom = YOURTHEMESLUG::instance();
+	}
+endif; // cherryblossom_setup
+add_action( 'after_setup_theme', 'yourthemeslug_setup', 99999 );
