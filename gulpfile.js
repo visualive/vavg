@@ -30,8 +30,8 @@ var gulp        = require('gulp'),
 	fs          = require('fs'),
 	yml         = require('js-yaml'),
 	settings    = yml.safeLoad(fs.readFileSync('site.yml')),
-	rootPath    = __dirname + '/wp-content/themes/' + settings.themeDirName,
-	// rootPath    = __dirname + '/themes/' + settings.themeDirName,
+	//rootPath    = __dirname + '/wp-content/themes/' + settings.themeDirName,
+	rootPath    = __dirname + '/themes/' + settings.themeDirName,
 	sourcePath  = rootPath + '/_sources',
 	assetsPath  = rootPath + '/assets',
 	sources     = {
@@ -73,7 +73,6 @@ var gulp        = require('gulp'),
 gulp.task('scss', function(){
 	return gulp.src(sources.scss)
 		.pipe($.plumber())
-		.pipe($.cached('scss'))
 		.pipe($.compass({
 			config_file: 'config.rb',
 			comments:    false,
@@ -109,7 +108,6 @@ gulp.task('scss', function(){
 gulp.task('js', function(){
 	return gulp.src(sources.js)
 		.pipe($.plumber())
-		.pipe($.cached('js'))
 		.pipe($.concat('script.js'))
 		.pipe(crLf({changeCode: 'LF'}))
 		.pipe(gulp.dest(sources.jsDestDir))
@@ -124,7 +122,6 @@ gulp.task('js', function(){
 gulp.task('jsIE', function(){
 	return gulp.src(sources.jsIE)
 		.pipe($.plumber())
-		.pipe($.cached('jsie'))
 		.pipe($.concat('ie.js'))
 		.pipe(crLf({changeCode: 'LF'}))
 		.pipe(gulp.dest(sources.jsDestDir))
