@@ -16,6 +16,7 @@ var gulp        = require('gulp'),
 	jpegoptim   = require('imagemin-jpegoptim'),
 	gifsicle    = require('imagemin-gifsicle'),
 	svgo        = require('imagemin-svgo'),
+	crLf        = require('gulp-cr-lf-replace'),
 	img         = {
 		"pngQuality": "60-70",
 		"pngSpeed": 5,
@@ -110,6 +111,7 @@ gulp.task('js', function(){
 		.pipe($.plumber())
 		.pipe($.cached('js'))
 		.pipe($.concat('script.js'))
+		.pipe(crLf({changeCode: 'LF'}))
 		.pipe(gulp.dest(sources.jsDestDir))
 		.pipe($.rename({
 			suffix: '.min',
@@ -124,6 +126,7 @@ gulp.task('jsIE', function(){
 		.pipe($.plumber())
 		.pipe($.cached('jsie'))
 		.pipe($.concat('ie.js'))
+		.pipe(crLf({changeCode: 'LF'}))
 		.pipe(gulp.dest(sources.jsDestDir))
 		.pipe($.rename({
 			suffix: '.min',
