@@ -1,8 +1,7 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 /**
- * WordPress theme bootstrap
- * This file will works as bootstrap.
+ * WordPress theme functions.
  *
  * @package WordPress
  * @subpackage Your theme name
@@ -41,10 +40,10 @@ spl_autoload_register( function( $class_name ) {
     }
 } );
 
+/**
+ * Theme sets up.
+ */
 if ( !function_exists( 'yourthemename_setup' ) ) :
-    /**
-     * Theme sets up.
-     */
     function yourthemename_setup() {
         if ( !class_exists( 'YOURTHEMENAME' ) ) {
             class YOURTHEMENAME extends VISUALIVE_THEME_SETUP {

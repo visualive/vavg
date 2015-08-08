@@ -34,35 +34,14 @@ class VISUALIVE_THEME_SETUP extends VISUALIVE_SINGLETON {
 	 *
 	 * @var object
 	 */
-	protected $theme    = null;
+	protected $theme = null;
 
 	/**
 	 * Feeds
 	 *
 	 * @var array
 	 */
-	protected $feeds    = array();
-
-	/**
-	 * This theme supports all available post formats by default.
-	 *
-	 * @var array
-	 */
-	protected $formats  = array();
-
-	/**
-	 * Switches default core markup to output valid HTML5.
-	 *
-	 * @var array
-	 */
-	protected $html5    = array();
-
-	/**
-	 * Theme supports.
-	 *
-	 * @var array
-	 */
-	protected $supports = array();
+	protected $feeds = array();
 
 	/**
 	 * Sets up theme defaults and registers support for various WordPress features.
@@ -73,11 +52,8 @@ class VISUALIVE_THEME_SETUP extends VISUALIVE_SINGLETON {
 	 * @since CherryBlossom 1.0.0
 	 */
 	protected function __construct( $settings = array() ) {
-		$this->theme    = VISUALIVE_THEME_DEFINE::instance();
-		$this->feeds    = array( 'rss2_head', 'commentsrss2_head', 'rss_head', 'rdf_header', 'atom_head', 'comments_atom_head', 'opml_head', 'app_head' );
-		$this->formats  = array( 'aside', 'audio', 'chat', 'gallery', 'image', 'link', 'quote', 'status', 'video' );
-		$this->html5    = array( 'search-form', 'comment-form', 'comment-list', 'gallery', 'caption' );
-		$this->supports = array( 'automatic-feed-links', 'title-tag', 'post-thumbnails' );
+		$this->theme = VISUALIVE_THEME_DEFINE::instance();
+		$this->feeds = array( 'rss2_head', 'commentsrss2_head', 'rss_head', 'rdf_header', 'atom_head', 'comments_atom_head', 'opml_head', 'app_head' );
 
 		/**
 		 * Remove emoji scripts.
@@ -93,34 +69,70 @@ class VISUALIVE_THEME_SETUP extends VISUALIVE_SINGLETON {
 		/**
 		 * Remove actions.
 		 */
-		remove_action( 'wp_head', 'rsd_link'                        );
-		remove_action( 'wp_head', 'wlwmanifest_link'                );
-		remove_action( 'wp_head', 'adjacent_posts_rel_link_wp_head' );
-		remove_action( 'wp_head', 'wp_shortlink_wp_head'            );
-		remove_action( 'wp_head', 'jetpack_og_tags'                 );
-		remove_action( 'wp_head', 'wp_generator'                    );
 		foreach ( $this->feeds as $feed ) {
 			remove_action( $feed, 'the_generator' );
 		}
+		remove_action( 'wp_head',           'wp_generator'                       );
+		remove_action( 'wp_head',           'rsd_link'                           );
+		remove_action( 'wp_head',           'wlwmanifest_link'                   );
+		remove_action( 'wp_head',           'parent_post_rel_link'               );
+		remove_action( 'wp_head',           'start_post_rel_link'                );
+		remove_action( 'wp_head',           'adjacent_posts_rel_link_wp_head'    );
+		remove_action( 'wp_head',           'wp_shortlink_wp_head'               );
+		remove_action( 'template_redirect', 'wp_shortlink_header',            11 );
+		remove_action( 'wp_head',           'jetpack_og_tags'                    );
+
+		/**
+		 * Add default posts and comments RSS feed links to head.
+		 */
+		add_action( 'wp', function () {
+			if ( is_single() || is_home() ) {
+				add_theme_support( 'automatic-feed-links' );
+			}
+			if ( is_page() ) {
+				remove_action( 'wp_head', 'feed_links_extra', 3 );
+			}
+		} );
+
+		/**
+		 * Let WordPress manage the document title.
+		 * By adding theme support, we declare that this theme does not use a
+		 * hard-coded <title> tag in the document head, and expect WordPress to
+		 * provide it for us.
+		 */
+		add_theme_support( 'title-tag' );
+
+		/**
+		 * Enable support for Post Thumbnails on posts and pages.
+		 * See: https://codex.wordpress.org/Function_Reference/add_theme_support#Post_Thumbnails
+		 */
+		add_theme_support( 'post-thumbnails' );
 
 		/**
 		 * This theme supports all available post formats by default.
 		 * See https://codex.wordpress.org/Post_Formats
 		 */
-		add_theme_support( 'post-formats', $this->formats );
+		add_theme_support( 'post-formats', array( 'aside', 'audio', 'chat', 'gallery', 'image', 'link', 'quote', 'status', 'video' ) );
 
 		/**
 		 * Switches default core markup for search form, comment form,
 		 * and comments to output valid HTML5.
 		 */
-		add_theme_support( 'html5', $this->html5 );
+		add_theme_support( 'html5', array( 'search-form', 'comment-form', 'comment-list', 'gallery', 'caption' ) );
 
 		/**
-		 * Theme supports.
+		 * This theme styles the visual editor to resemble the theme style,
+		 * specifically font, colors, icons, and column width.
 		 */
-		foreach ( $this->supports as $support ) {
-			add_theme_support( $support );
-		}
+		add_editor_style( 'style-editor.min.css' );
+
+		/**
+		 * Creates the generator XML or Comment for RSS, ATOM, etc.
+		 */
+//		add_filter( 'the_generator', array( &$this, 'get_the_generator' ), 10, 2 );
+//		foreach ( $this->feeds as $feed ) {
+//			add_action( $feed, array( &$this, 'the_generator' ) );
+//		}
 
 		/**
 		 * Change front page title.
@@ -130,14 +142,153 @@ class VISUALIVE_THEME_SETUP extends VISUALIVE_SINGLETON {
 		/**
 		 * Enqueue scripts and styles.
 		 */
-		add_action( 'wp_enqueue_scripts', array( &$this, 'wp_enqueue_scripts' ), 0       );
-		add_filter( 'style_loader_src',   array( &$this, 'script_loader_src' ),  1000, 2 );
-		add_filter( 'script_loader_src',  array( &$this, 'script_loader_src' ),  1000, 2 );
+		add_action( 'wp_enqueue_scripts', array( &$this, 'wp_enqueue_scripts' ), 0    );
+		add_filter( 'style_loader_src',   array( &$this, 'script_loader_src' ),  1000 );
+		add_filter( 'script_loader_src',  array( &$this, 'script_loader_src' ),  1000 );
 
 		/**
-		 * Retrieve the classes for the body element as an array.
+		 * Retrieve the classes for the html element as an array.
 		 */
-		add_filter( 'body_class', array( &$this, 'body_class' ) );
+		add_filter( 'body_class',    array( &$this, 'body_class' )                  );
+		add_filter( 'comment_class', array( &$this, 'remove_comment_author_class' ) );
+
+		/**
+		 * Change the email address to send from
+		 * and the name to associate with the "from" email address.
+		 */
+		add_filter( 'wp_mail_from',      array( &$this, 'wp_mail_from' )      );
+		add_filter( 'wp_mail_from_name', array( &$this, 'wp_mail_from_name' ) );
+
+		/**
+		 * To hack the Yoast WordPress SEO plugin.
+		 */
+		if ( class_exists( 'WPSEO_Frontend' ) ) {
+			$this->wpseo = VISUALIVE_WPSEO_FRONTEND::get_instance();
+			remove_action( 'init', 'initialize_wpseo_front' );
+			add_filter( 'language_attributes', function ( $output ) {
+				return str_replace( ' prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#"', ' prefix="' . self::get_ogp_prefix() . '"', $output );
+			}, 99 );
+		}
+	}
+
+	/**
+	 * Display OGp prefix.
+	 *
+	 * @param  bool|true $echo
+	 * @return string
+	 */
+	function get_ogp_prefix() {
+		$namespace[] = 'og:http://ogp.me/ns#';
+		$namespace[] = 'fb:http://ogp.me/ns/fb#';
+
+		if ( is_single() || (is_page() && !is_front_page() ) ) {
+			$namespace[] = 'article:http://ogp.me/ns/article#';
+		} else {
+			$namespace[] = 'website:http://ogp.me/ns/website#';
+		}
+
+		$result = implode( ' ', $namespace );
+
+		return $result;
+	}
+
+	/**
+	 * Change the email address to send from.
+	 */
+	public function wp_mail_from() {
+		return get_bloginfo( 'admin_email' );
+	}
+
+	/**
+	 * Change the name to associate with the "from" email address.
+	 */
+	public function wp_mail_from_name() {
+		return get_bloginfo( 'name' );
+	}
+
+	/**
+	 * Filter the output of the XHTML generator tag for display.
+	 *
+	 * @param string $type The type of generator to output. Accepts (html|xhtml|atom|rss2|rdf|comment|export).
+	 */
+	public function the_generator( $type ) {
+		echo apply_filters( $this->theme->text_domain . '_the_generator', self::get_the_generator($type), $type ) . "\n";
+	}
+
+	/**
+	 * Creates the generator XML or Comment for RSS, ATOM, etc.
+	 *
+	 * @param string $html The generator output.
+	 * @param string $type The type of generator to return - (html|xhtml|atom|rss2|rdf|comment|export).
+	 *
+	 * @return string The HTML content for the generator.
+	 */
+	public function get_the_generator( $html = '', $type = '' ) {
+		$generator_name    = apply_filters( 'visualive_generator_name',    $this->theme->name_raw );
+		$generator_version = apply_filters( 'visualive_generator_version', $this->theme->version  );
+		$generator_url     = home_url('');
+		$gen               = '';
+
+		if ( empty( $type ) ) {
+
+			$current_filter = current_filter();
+			if ( empty( $current_filter ) )
+				return;
+
+			switch ( $current_filter ) {
+				case 'rss2_head' :
+				case 'commentsrss2_head' :
+					$type = 'rss2';
+					break;
+				case 'rss_head' :
+				case 'opml_head' :
+					$type = 'comment';
+					break;
+				case 'rdf_header' :
+					$type = 'rdf';
+					break;
+				case 'atom_head' :
+				case 'comments_atom_head' :
+				case 'app_head' :
+					$type = 'atom';
+					break;
+			}
+		}
+
+		switch ( $type ) {
+			case 'html':
+				$gen = '<meta name="generator" content="' . $generator_name . ' - ' . $generator_version . '">';
+				break;
+			case 'xhtml':
+				$gen = '<meta name="generator" content="' . $generator_name . ' - ' . $generator_version . '" />';
+				break;
+			case 'atom':
+				$gen = '<generator uri="' . $generator_url . '/" version="' . $generator_version . '">' . $generator_name . '</generator>';
+				break;
+			case 'rss2':
+				$gen = '<generator>' . $generator_url . '/?v=' . $generator_version . '</generator>';
+				break;
+			case 'rdf':
+				$gen = '<admin:generatorAgent rdf:resource="' . $generator_url . '/?v=' . $generator_version . '" />';
+				break;
+			case 'comment':
+				$gen = '<!-- generator="' . $generator_name . '/' . $generator_version . '" -->';
+				break;
+			case 'export':
+				$gen = '<!-- generator="' . $generator_name . '/' . $generator_version . '" created="'. date('Y-m-d H:i') . '" -->';
+				break;
+		}
+
+		/**
+		 * Filter the HTML for the retrieved generator type.
+		 *
+		 * The dynamic portion of the hook name, `$type`, refers to the generator type.
+		 *
+		 * @param string $gen  The HTML markup output to {@see wp_head()}.
+		 * @param string $type The type of generator. Accepts 'html', 'xhtml', 'atom',
+		 *                     'rss2', 'rdf', 'comment', 'export'.
+		 */
+		return apply_filters( $this->theme->text_domain . "_get_the_generator_{$type}", $gen, $type );
 	}
 
 	/**
@@ -152,11 +303,12 @@ class VISUALIVE_THEME_SETUP extends VISUALIVE_SINGLETON {
 	public function wp_title( $title, $sep, $seplocation ) {
 		if ( ( is_front_page() && is_page() ) || ( is_front_page() && is_home() ) ) {
 			$title = get_bloginfo( 'name', 'display' );
+		} elseif ( is_home() && !is_front_page() ) {
+			$title = single_post_title( '', false ) . " $sep " . get_bloginfo( 'name', 'display' );
 		}
 
 		return $title;
 	}
-
 
 	/**
 	 * Enqueue scripts and styles.
@@ -167,14 +319,14 @@ class VISUALIVE_THEME_SETUP extends VISUALIVE_SINGLETON {
 		$scripts = array(
 			array(
 				'handle' => $this->theme->name,
-				'src'    => $this->theme->uri . '/style.min.js',
+				'src'    => $this->theme->uri . '/style.min.css',
 				'deps'   => array(),
 				'ver'    => $this->theme->version,
 			),
 			array(
 				'handle'    => 'jquery',
 				'src'       => $this->theme->uri . '/assets/js/script.min.js',
-				'deps'      => array( 'jquery' ),
+				'deps'      => array(),
 				'ver'       => $this->theme->version,
 				'in_footer' => true
 			),
@@ -230,12 +382,14 @@ class VISUALIVE_THEME_SETUP extends VISUALIVE_SINGLETON {
 		/**
 		 * Load enqueued scripts in the Footer.
 		 */
-		remove_action( 'wp_head', 'wp_print_scripts'         );
-		remove_action( 'wp_head', 'wp_print_head_scripts', 9 );
-		remove_action( 'wp_head', 'wp_enqueue_scripts',    1 );
-		add_action( 'wp_footer',  'wp_print_head_scripts', 5 );
-		add_action( 'wp_footer',  'wp_print_scripts',      5 );
-		add_action( 'wp_footer',  'wp_enqueue_scripts',    1 );
+		if ( !is_admin() ) {
+			remove_action( 'wp_head', 'wp_print_scripts'         );
+			remove_action( 'wp_head', 'wp_print_head_scripts', 9 );
+			remove_action( 'wp_head', 'wp_enqueue_scripts',    1 );
+			add_action( 'wp_footer',  'wp_print_head_scripts', 5 );
+			add_action( 'wp_footer',  'wp_print_scripts',      5 );
+			add_action( 'wp_footer',  'wp_enqueue_scripts',    1 );
+		}
 	}
 
 	/**
@@ -244,10 +398,10 @@ class VISUALIVE_THEME_SETUP extends VISUALIVE_SINGLETON {
 	 * @return string
 	 */
 	public function script_loader_src( $src ) {
-		$str = '?ver=' .get_bloginfo( 'version' );
+		$str = 'ver=';
 
 		if ( !is_admin() && strpos( $src, $str ) ) {
-			$src = add_query_arg( 'ver', $this->theme->version, $src );
+			$src = remove_query_arg( 'ver', $src );
 		}
 		return $src;
 	}
@@ -258,7 +412,7 @@ class VISUALIVE_THEME_SETUP extends VISUALIVE_SINGLETON {
 	 * @param string|array $class One or more classes to add to the class list.
 	 * @return array Array of classes.
 	 */
-	function body_class() {
+	public function body_class() {
 		global $wp_query;
 
 		$classes = array();
@@ -318,9 +472,8 @@ class VISUALIVE_THEME_SETUP extends VISUALIVE_SINGLETON {
 					$post_format = get_post_format( $object->ID );
 
 					if ( $post_format && !is_wp_error( $post_format ) ) {
-						$classes[] = 'single-format';
+						$classes[] = 'single-format-' . sanitize_html_class( $post_format );
 					}
-					$classes[] = 'single-format-' . sanitize_html_class( $post_format );
 				}
 			}
 
@@ -376,8 +529,8 @@ class VISUALIVE_THEME_SETUP extends VISUALIVE_SINGLETON {
 				$template_slug  = get_page_template_slug( $post_id );
 				$template_parts = explode( '/', $template_slug );
 
-				foreach ( $template_parts as $part ) {
-					$classes[] = 'page-template-' . sanitize_html_class( str_replace( array( '.', '/' ), '-', basename( $part, '.php' ) ) );
+				foreach ( (array)array_pop( $template_parts ) as $part ) {
+					$classes[] = 'page-layout-' . sanitize_html_class( str_replace( array( '.', '/', '-' ), '', basename( $part, '.php' ) ) );
 				}
 			}
 		}
@@ -412,5 +565,20 @@ class VISUALIVE_THEME_SETUP extends VISUALIVE_SINGLETON {
 		$classes = apply_filters( $this->theme->text_domain . '_body_class', $classes, $class );
 
 		return array_unique( $classes );
+	}
+
+	/**
+	 * Remove admin name in comments class
+	 *
+	 * @link http://www.wprecipes.com/wordpress-hack-remove-admin-name-in-comments-class Documentation
+	 */
+	public function remove_comment_author_class( $classes ) {
+		foreach( $classes as $key => $class ) {
+			if(strstr($class, "comment-author-")) {
+				unset( $classes[$key] );
+			}
+		}
+
+		return $classes;
 	}
 }

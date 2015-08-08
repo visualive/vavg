@@ -1,15 +1,6 @@
 /*!
- Theme Name: VAVG starter theme
- Version: 1.0.0
- Description: VisuAlive WordPress Theme by KUCKLU and VisuAlive
- Author: kuck1u
- Author URI: https://github.com/kuck1u/vavg
- Theme URI: https://github.com/kuck1u/vavg
- License: GNU General Public License version 2.0 later
- License URI: http://www.gnu.org/licenses/gpl-2.0.html
- Tags: light, responsive-layout, custom-background, threaded-comments, custom-menu, featured-images, full-width-template, theme-options, translation-ready
- Text domain: vavg-starter-theme
- Domain path: /langs
+ WordPress editor style.
+
 
  Copyright (C) 2015  KUCKLU and VisuAlive.
 
@@ -38,6 +29,4 @@
 @import "foundation/components/visibility";
 @import "foundation/components/grid";
 @import "foundation/components/block-grid";
-@import "slick";
-@import "slick-theme";
 @import "editor";
