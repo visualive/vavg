@@ -53,7 +53,7 @@ if ( !function_exists( 'yourthemeslug_setup' ) ) :
 			}
 		}
 
-		$cherryblossom = YOURTHEMESLUG::instance();
+		$yourthemeslug = YOURTHEMESLUG::instance();
 	}
 endif; // yourthemeslug_setup
 add_action( 'after_setup_theme', 'yourthemeslug_setup', 99999 );
