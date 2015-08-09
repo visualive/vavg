@@ -55,4 +55,7 @@ plugins:
   - ajax-thumbnail-rebuild
   - dynamic-hostname
   - developer
+  - mw-wp-form
+  - smart-custom-fields
+  - wordpress-seo
   - wp-sweep
