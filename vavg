@@ -70,9 +70,12 @@ if [ "$FLAG_i" ]; then
             FLAG_sass=1
         fi
 
-        if [ ! -x "`which sass`" ] && [ -x "`which gem`" ] && [ "$(uname)" == "Darwin" ]; then
+        if [ "$FLAG_sass" ] && [ -x "`rbenv`" ]; then
+            gem install sass
+            rbenv rehash
+        elif [ "$FLAG_sass" ] && [ "$(uname)" == "Darwin" ]; then
             sudo gem install sass
-        elif [ ! -x "`which sass`" ] && [ -x "`which gem`" ]; then
+        elif [ "$FLAG_sass" ]; then
             gem install sass
         fi
 
@@ -86,9 +89,12 @@ if [ "$FLAG_i" ]; then
             FLAG_compass=1
         fi
 
-        if [ ! -x "`which compass`" ] && [ -x "`which gem`" ] && [ "$(uname)" == "Darwin" ]; then
+        if [ "$FLAG_compass" ] && [ -x "`rbenv`" ]; then
+            gem install compass
+            rbenv rehash
+        elif [ "$FLAG_compass" ] && [ "$(uname)" == "Darwin" ]; then
             sudo gem install compass
-        elif [ ! -x "`which compass`" ] && [ -x "`which gem`" ]; then
+        elif [ "$FLAG_compass" ]; then
             gem install compass
         fi
 
