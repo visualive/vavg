@@ -1,6 +1,7 @@
 #!/bin/sh
 PROGNAME=$(basename $0)
 VERSION="1.0.4"
+DIR=$(cd $(dirname $0); pwd)
 
 usage() {
     echo "Usage: $PROGNAME [OPTIONS] FILE"
@@ -75,7 +76,7 @@ if [ "$FLAG_i" ]; then
             gem install sass
         fi
 
-        if [ "$FLAG_sass" ]; then
+        if [ ! -x "`which sass`" ]; then
             echo "Sass のインストールを試みましたが、インストールに失敗しました。"
         fi
     fi
@@ -91,7 +92,7 @@ if [ "$FLAG_i" ]; then
             gem install compass
         fi
 
-        if [ "$FLAG_compass" ]; then
+        if [ ! -x "`which compass`" ]; then
             echo "Compass のインストールを試みましたが、インストールに失敗しました。"
         fi
     fi
@@ -101,9 +102,9 @@ if [ "$FLAG_i" ]; then
     fi
 
     if [ ! -x "`which bower`" ] && [ "$(uname)" == "Darwin" ]; then
-        sudo npm install bower –g
+        sudo npm install -g bower
     elif [ ! -x "`which bower`" ]; then
-        npm install bower –g
+        npm install -g bower
     fi
 
     if [ ! -x "`which bower`" ]; then
@@ -112,9 +113,9 @@ if [ "$FLAG_i" ]; then
     fi
 
     if [ ! -x "`which gulp`" ] && [ "$(uname)" == "Darwin" ]; then
-        sudo npm install gulp –g
+        sudo npm install –g gulp
     elif [ ! -x "`which gulp`" ]; then
-        npm install gulp –g
+        npm install –g gulp
     fi
 
     if [ ! -x "`which gulp`" ]; then

@@ -32,10 +32,6 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  * Autoloader.
  */
 spl_autoload_register( function( $class_name ) {
-	if ( in_array( $class_name, $exclusion ) ) {
-		return;
-	}
-
 	$_class_name = str_replace( array( 'VISUALIVE', 'CHERRYBLOSSOM', '_'), array( 'class', 'class', '-' ), $class_name );
 	$path        = __DIR__ . DIRECTORY_SEPARATOR . 'incs' . DIRECTORY_SEPARATOR . mb_strtolower( $_class_name ) . '.php';
 
@@ -47,7 +43,7 @@ spl_autoload_register( function( $class_name ) {
 /**
  * Theme sets up.
  */
-if ( !function_exists( 'cherryblossom_setup' ) ) :
+if ( !function_exists( 'yourthemeslug_setup' ) ) :
 	function yourthemeslug_setup() {
 		if ( !class_exists( 'YOURTHEMESLUG' ) ) {
 			class YOURTHEMESLUG extends VISUALIVE_THEME_SETUP {
