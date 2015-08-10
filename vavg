@@ -48,15 +48,15 @@ if [ "$FLAG_i" ]; then
         echo ""
     fi
 
-    if [ ! -x "`which node`" ] || [ ! -x "`which npm`" ]; then
-        echo "Node.js または npm コマンドがインストールされていません。"
-        echo "npm コマンドは、通常 Node.js と一緒にインストールされます。"
+    if [ ! -x "`which ruby`" ] || [ ! -x "`which gem`" ]; then
+        echo "Ruby または gem コマンドがインストールされていません。"
+        echo "gem コマンドは、通常 Ruby と一緒にインストールされます。"
         echo ""
     fi
 
-    if [ ! -x "`which node`" ] || [ ! -x "`which gem`" ]; then
-        echo "Ruby または gem コマンドがインストールされていません。"
-        echo "gem コマンドは、通常 Ruby と一緒にインストールされます。"
+    if [ ! -x "`which node`" ] || [ ! -x "`which npm`" ]; then
+        echo "Node.js または npm コマンドがインストールされていません。"
+        echo "npm コマンドは、通常 Node.js と一緒にインストールされます。"
         echo ""
     fi
 
@@ -70,17 +70,21 @@ if [ "$FLAG_i" ]; then
             FLAG_sass=1
         fi
 
-        if [ "$FLAG_sass" ] && [ -x "`rbenv`" ]; then
-            gem install sass
-            rbenv rehash
-        elif [ "$FLAG_sass" ] && [ "$(uname)" == "Darwin" ]; then
+        if [ "$FLAG_sass" ] && [ "$(uname)" == "Darwin" ]; then
             sudo gem install sass
         elif [ "$FLAG_sass" ]; then
             gem install sass
         fi
 
+        if [ "$FLAG_sass" ] && [ -x "`which rbenv`" ]; then
+            rbenv rehash
+        fi
+
         if [ ! -x "`which sass`" ]; then
             echo "Sass のインストールを試みましたが、インストールに失敗しました。"
+            echo "手動で '$ sudo gem install sass' を実行してください。"
+            echo "rbenv で Ruby を管理している場合、Sass インストール完了後 '$ rbenv rehash' を実行してください。"
+            exit 1
         fi
     fi
 
@@ -89,17 +93,21 @@ if [ "$FLAG_i" ]; then
             FLAG_compass=1
         fi
 
-        if [ "$FLAG_compass" ] && [ -x "`rbenv`" ]; then
-            gem install compass
-            rbenv rehash
-        elif [ "$FLAG_compass" ] && [ "$(uname)" == "Darwin" ]; then
+        if [ "$FLAG_compass" ] && [ "$(uname)" == "Darwin" ]; then
             sudo gem install compass
         elif [ "$FLAG_compass" ]; then
             gem install compass
         fi
 
+        if [ "$FLAG_compass" ] && [ -x "`which rbenv`" ]; then
+            rbenv rehash
+        fi
+
         if [ ! -x "`which compass`" ]; then
             echo "Compass のインストールを試みましたが、インストールに失敗しました。"
+            echo "手動で '$ sudo gem install compass' を実行してください。"
+            echo "rbenv で Ruby を管理している場合、Compass インストール完了後 '$ rbenv rehash' を実行してください。"
+            exit 1
         fi
     fi
 
@@ -107,26 +115,32 @@ if [ "$FLAG_i" ]; then
         exit 1
     fi
 
-    if [ ! -x "`which bower`" ] && [ "$(uname)" == "Darwin" ]; then
-        sudo npm install -g bower
-    elif [ ! -x "`which bower`" ]; then
-        npm install -g bower
-    fi
-
     if [ ! -x "`which bower`" ]; then
-        echo "Bower のインストールを試みましたが、インストールに失敗しました。"
-        exit 1
-    fi
+        if [ ! -x "`which bower`" ] && [ "$(uname)" == "Darwin" ]; then
+            sudo npm install -g bower
+        elif [ ! -x "`which bower`" ]; then
+            npm install -g bower
+        fi
 
-    if [ ! -x "`which gulp`" ] && [ "$(uname)" == "Darwin" ]; then
-        sudo npm install –g gulp
-    elif [ ! -x "`which gulp`" ]; then
-        npm install –g gulp
+        if [ ! -x "`which bower`" ]; then
+            echo "Bower のインストールを試みましたが、インストールに失敗しました。"
+            echo "手動で '$ sudo npm install –g bower' を実行してください。"
+            exit 1
+        fi
     fi
 
     if [ ! -x "`which gulp`" ]; then
-        echo "Gulp のインストールを試みましたが、インストールに失敗しました。"
-        exit 1
+        if [ ! -x "`which gulp`" ] && [ "$(uname)" == "Darwin" ]; then
+            sudo npm install –g gulp
+        elif [ ! -x "`which gulp`" ]; then
+            npm install -g gulp
+        fi
+
+        if [ ! -x "`which gulp`" ]; then
+            echo "Gulp のインストールを試みましたが、インストールに失敗しました。"
+            echo "手動で '$ sudo npm install –g gulp' を実行してください。"
+            exit 1
+        fi
     fi
 
     if [ ! -e bower.json ]; then
@@ -189,8 +203,7 @@ if [ "$FLAG_i" ]; then
     latest=`curl -sI https://github.com/vccw-team/vccw/releases/latest | awk -F'/' '/^Location:/{print $NF}' | tr -d '\r'`
     wget https://github.com/vccw-team/vccw/archive/${latest}.zip
 
-    if [ ! -e ${latest}.zip ];
-    then
+    if [ ! -e ${latest}.zip ]; then
         echo "VCCW をダウンロードできませんでした。"
         exit 1
     fi
@@ -213,6 +226,7 @@ if [ "$FLAG_i" ]; then
     if [ ! "$FLAG_s" ]; then
         vagrant halt
     fi
+
     echo "VAVG のインストールが完了しました。"
 fi
 
