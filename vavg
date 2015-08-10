@@ -131,9 +131,9 @@ if [ "$FLAG_i" ]; then
 
     if [ ! -x "`which gulp`" ]; then
         if [ ! -x "`which gulp`" ] && [ "$(uname)" == "Darwin" ]; then
-            sudo npm install –g gulp
+            sudo npm install gulp –g
         elif [ ! -x "`which gulp`" ]; then
-            npm install -g gulp
+            npm install gulp -g
         fi
 
         if [ ! -x "`which gulp`" ]; then
@@ -176,12 +176,6 @@ if [ "$FLAG_i" ]; then
     fi
 
     gulp vavg
-
-    if [ "$(uname)" == "Darwin" ]; then
-        sudo npm install
-    else
-        npm install
-    fi
 
     if [ "$(uname)" == "Darwin" ]; then
         if [ ! -x "`which VBoxManage`" ]; then
