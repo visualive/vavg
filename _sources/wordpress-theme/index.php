@@ -1,16 +1,20 @@
 <?php get_header(); ?>
 
+<?php if ( have_posts() ) :?>
 <div class="row">
-    <div class="small-6 medium-3 columns">Column 1</div>
-    <div class="small-6 medium-3 columns">Column 2</div>
-    <div class="small-6 medium-3 columns">Column 3</div>
-    <div class="small-6 medium-3 columns">Column 4</div>
-</div>
-
-<div class="row">
-    <div class="small-12 columns">
-        <p>- <a href="<?php echo home_url( 'wp-admin' ); ?>">WORDPRESS LOGIN</a> -</p>
+    <?php while ( have_posts() ): the_post(); ?>
+    <div <?php post_class( 'entry' ); ?>>
+        <article class="small-12 columns">
+            <header class="entry_header">
+                <h1 class="entry_header_text"><?php the_title(); ?></h1>
+            </header>
+            <div class="entry_body">
+                <?php the_content(); ?>
+            </div>
+        </article>
     </div>
+    <?php endwhile; ?>
 </div>
+<?php endif; ?>
 
 <?php get_footer(); ?>
