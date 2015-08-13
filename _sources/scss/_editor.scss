@@ -1,9 +1,45 @@
-.screenReaderText {
+.alignnone {
+  margin: 5px 1em 1em 0;
+}
+
+.aligncenter {
+  display: block;
+  margin: 1em auto;
+}
+
+.alignright {
+  float:right;
+  margin: 5px 0 1em 1em;
+}
+
+.alignleft {
+  float: left;
+  margin: 5px 1em 1em 0;
+}
+
+.wp-caption {
+  background: #EEEEEE;
+  clear: both;
+  text-align: center;
+  height: auto !important;
+  max-width: 100% !important;
+  padding: 0;
+}
+
+.wp-caption .wp-caption-text {
+  font-size: rem-calc(14);
+  line-height: 1.5;
+  margin: 0;
+  padding: 16px;
+}
+
+/* Text meant only for screen readers. */
+.screen-reader-text {
   clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
   clip: rect(1px, 1px, 1px, 1px);
   clip-path: polygon(0px 0px, 0px 0px,0px 0px, 0px 0px);
-  height: 1px;
-  overflow: hidden;
   position: absolute !important;
+  height: 1px;
   width: 1px;
+  overflow: hidden;
 }

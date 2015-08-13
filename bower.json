@@ -21,6 +21,7 @@
     "jquery.mb.ytplayer": "~2.9.4",
     "nwmatcher": "~1.3.6",
     "jquery-legacy": "jquery#^1",
-    "jquery-modern": "jquery#~2.1.4"
+    "jquery-modern": "jquery#~2.1.4",
+    "jqueryui-smoothness": "~1.11.3"
   }
 }

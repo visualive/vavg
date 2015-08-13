@@ -1,0 +1,76 @@
+input[type='text'],
+input[type='password'],
+input[type='date'],
+input[type='datetime'],
+input[type='datetime-local'],
+input[type='month'],
+input[type='week'],
+input[type='email'],
+input[type='number'],
+input[type='search'],
+input[type='tel'],
+input[type='time'],
+input[type='url'],
+input[type='color'],
+select,
+textarea {
+  border-radius: 3px;
+}
+
+input[name='schedule'][readonly] {
+  background: #FFFFFF;
+}
+
+label.inline {
+  padding-bottom: 0;
+  @media #{$small-only} {
+	margin-bottom: #{$rem-base / 4};
+  }
+}
+
+/*!
+ * MW WP Form plugin.
+ */
+// フォーム入力画面
+.mw_wp_form {
+  .form_value:not(div) {
+	display: inline-block;
+  }
+  .form_value {
+	width: 100%;
+	@media #{$medium-up} {
+	  padding-top: 13px;
+	}
+  }
+  .error {
+	color: #FFFFFF !important;
+	font-size: rem-calc(14) !important;
+	margin-top: rem-calc(-17);
+  }
+  .form_submit {
+	margin: 2em 0;
+	text-align: center;
+  }
+  input[name='submit'] {
+	margin-left: 1em;
+  }
+  @media #{$medium-up} {
+	& > form > .row > .columns > .row {
+	  border-top: solid 1px #e1e1e1;
+	}
+	.form_label {
+	  padding-top: 22px;
+	}
+  }
+}
+// 入力内容確認画面
+.mw_wp_form_confirm {
+  .form_value {
+	margin-bottom: $rem-base;
+  }
+  @media #{$medium-up} {
+	.form_label {
+	  padding-top: 16px;
+	}
+  }
+}
