@@ -92,6 +92,10 @@ $ ./vavg -s
 * OSX: 10.10.5
 * Windows: not tested
 
+## Hint
+
+デプロイ（または、Git へのコミットなど）する前に、wp-config.php の WP_DEBUG 定数を falseにし、`$ gulp build` 後に動作確認を行ってから、デプロイするようにしましょう。
+
 ## Change log
 * v1.1.0  
 メンテナンスリリース。  
