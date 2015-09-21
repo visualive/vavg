@@ -23,7 +23,7 @@ VisuAlive + VCCW + Gulp (vavg)
 * [ImageMagic](http://www.imagemagick.org/script/binary-releases.php#windows)  
     * Cygwin でもインストール可能。
 
-Windows での移行の作業は全て、Cygwin で行ってください。ただし、起動できるかは分かりません。
+Windows での作業は全て、Cygwin で行ってください。ただし、起動できるかは分かりません。
 
 ## How to use
 
@@ -33,7 +33,11 @@ VAVG のダウンロードから初回起動
 # IDE などのプロジェクトディレクト直下に移動
 $ cd /Users/YOURNAME/PhpstormProjects/TEST/
 # VCCW + Gulp 1発起動スクリプト VAVG をダウンロード
-$ wget http://github.com/kuck1u/vavg/archive/master.zip && unzip ./master.zip && rm -rf ./master.zip && mv ./vavg-master/* ./ && rm -rf ./vavg-master
+$ wget http://github.com/kuck1u/vavg/archive/master.zip && \
+unzip ./master.zip && \
+rm -rf ./master.zip && \
+mv ./vavg-master/* ./ && \
+rm -rf ./vavg-master
 # テーマファイル名を編集
 $ vi ./_sources/scss/style.scss
 # VCCW の設定ファイルを編集
@@ -63,6 +67,9 @@ $ ./vavg -s
 * Windows: not tested
 
 ## Change log
+* v1.1.0  
+メンテナンスリリース。  
+軽いバグフィックス、Gulp 実行の高速化 etc。
 * v1.0.4  
 テーマファイルの関数郡を多数更新。
 * v1.0.3  
