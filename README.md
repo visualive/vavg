@@ -16,22 +16,22 @@ VisuAlive + VCCW + Gulp (vavg)
 * [Vagrant](https://www.vagrantup.com/)
 * [Node.js](http://nodejs.jp/)
 * [Cygwin](https://cygwin.com/)  
-    * Cygwin 本体、wget / curl / unzip / をインストールする。
-* [Ruby](http://rubyinstaller.org/)  
-    * パッケージマネージャーの Rubygems も一緒にインストールする。
-    * Cygwin でも、Ruby と Rubygems をインストール可能。
-* [ImageMagic](http://www.imagemagick.org/script/binary-releases.php#windows)  
+    * Cygwin 本体、wget / curl / unzip / Ruby / Rubygems をインストールする。
+* [ImageMagick](http://www.imagemagick.org/script/binary-releases.php#windows)  
     * Cygwin でもインストール可能。
 
 Windows での作業は全て、Cygwin で行ってください。ただし、起動できるかは分かりません。
 
 ## How to use
 
-VAVG のダウンロードから初回起動
+[Demo movie / Youtube](https://www.youtube.com/watch?v=Sg5BlZtUv0w)
+
+### VAVG を起動させる
 
 ```
 # IDE などのプロジェクトディレクト直下に移動
 $ cd /Users/YOURNAME/PhpstormProjects/TEST/
+
 # VCCW + Gulp 1発起動スクリプト VAVG をダウンロード
 $ wget http://github.com/kuck1u/vavg/archive/master.zip && \
 unzip ./master.zip && \
@@ -39,15 +39,30 @@ rm -rf ./master.zip && \
 mv ./vavg-master/* ./ && \
 rm -rf ./vavg-master && \
 chmod u+x ./vavg
+
 # テーマファイル名を編集
 $ vi ./_sources/scss/style.scss
+
 # VCCW の設定ファイルを編集
 $ vi ./site.yml
+
 # VAVG のインストールと起動
 $ ./vavg -i -s
 ```
 
-[Demo movie / Youtube](https://www.youtube.com/watch?v=Sg5BlZtUv0w)
+2 回目以降は下記コマンドで、VCCW と Gulp がスタートする。
+
+```
+$ ./vavg -s
+```
+
+### VAVG を終了させる
+
+<kbd>Cont</kbd> + <kbd>c</kbd> で Gulp を終了させる。その後、下記コマンドで Vagrant を終了させる。
+
+```
+$ vagrant halt
+```
 
 ### Options
 #### Install mode
