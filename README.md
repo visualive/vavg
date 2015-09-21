@@ -5,7 +5,7 @@ VisuAlive + VCCW + Gulp (vavg)
 
 ## Ready
 
-あらかじめ、Vagrant、Node.js、Ruby、ImageMagic をインストールしておく必要があります。
+あらかじめ、Vagrant、Node.js、Ruby、ImageMagick をインストールしておく必要があります。
 
 ### Mac OS X
 
@@ -37,13 +37,14 @@ $ wget http://github.com/kuck1u/vavg/archive/master.zip && \
 unzip ./master.zip && \
 rm -rf ./master.zip && \
 mv ./vavg-master/* ./ && \
-rm -rf ./vavg-master
+rm -rf ./vavg-master && \
+chmod u+x ./vavg
 # テーマファイル名を編集
 $ vi ./_sources/scss/style.scss
 # VCCW の設定ファイルを編集
 $ vi ./site.yml
 # VAVG のインストールと起動
-$ chmod u+x ./vavg && ./vavg -i -s
+$ ./vavg -i -s
 ```
 
 [Demo movie / Youtube](https://www.youtube.com/watch?v=Sg5BlZtUv0w)
