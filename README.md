@@ -24,6 +24,18 @@ Windows での作業は全て Cygwin で行ってください。ただし、起�
 
 [Demo movie / Youtube](https://www.youtube.com/watch?v=Sg5BlZtUv0w)
 
+とりあえず試してみたい場合。
+
+```
+$ wget http://github.com/kuck1u/vavg/archive/master.zip && \
+unzip ./master.zip && \
+rm -rf ./master.zip && \
+mv ./vavg-master/* ./ && \
+rm -rf ./vavg-master && \
+chmod u+x ./vavg && \
+./vavg -i -s
+```
+
 ### VAVG を起動させる
 
 ```
