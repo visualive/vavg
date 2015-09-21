@@ -1,6 +1,6 @@
 #!/bin/sh
 PROGNAME=$(basename $0)
-VERSION="1.0.4"
+VERSION="1.1.0"
 DIR=$(cd $(dirname $0); pwd)
 
 usage() {
@@ -43,8 +43,13 @@ do
 done
 
 if [ "$FLAG_i" ]; then
+    echo "VAVG のセットアップを開始します。"
+
     if [ ! -x "`which vagrant`" ]; then
         echo "Vagrant がインストールされていません。"
+        if [ "$(uname)" == "Darwin" ]; then
+            echo "※OS X で Homebrew を利用している場合、brew cask でもインストール可能です。"
+        fi
         echo ""
     fi
 
@@ -111,10 +116,6 @@ if [ "$FLAG_i" ]; then
         fi
     fi
 
-    if [ ! -x "`which vagrant`" ] || [ ! -x "`which node`" ] || [ ! -x "`which npm`" ] || [ ! -x "`which ruby`" ] || [ ! -x "`which gem`" ] || [ ! -x "`which convert`" ] || [ ! -x "`which sass`" ] || [ ! -x "`which compass`" ]; then
-        exit 1
-    fi
-
     if [ ! -x "`which bower`" ]; then
         if [ ! -x "`which bower`" ] && [ "$(uname)" == "Darwin" ]; then
             sudo npm install -g bower
@@ -155,15 +156,11 @@ if [ "$FLAG_i" ]; then
         echo "gulpfile.js がありません。"
     fi
 
-    if [ ! -e config.rb ]; then
-        echo "config.rb がありません。"
+    if [ ! -e ".csscomb.json" ]; then
+        echo ".csscomb.json がありません。"
     fi
 
-    if [ ! -e csscomb.json ]; then
-        echo "csscomb.json がありません。"
-    fi
-
-    if [ ! -e bower.json ] || [ ! -e package.json ] || [ ! -e gulpfile.js ] || [ ! -e config.rb ] || [ ! -e csscomb.json ]; then
+    if [ ! -x "`which vagrant`" ] || [ ! -x "`which node`" ] || [ ! -x "`which npm`" ] || [ ! -x "`which ruby`" ] || [ ! -x "`which gem`" ] || [ ! -x "`which convert`" ] || [ ! -x "`which sass`" ] || [ ! -x "`which compass`" ] || [ ! -x "`which bower`" ] || [ ! -x "`which gulp`" ] || [ ! -e bower.json ] || [ ! -e package.json ] || [ ! -e gulpfile.js ] || [ ! -e ".csscomb.json" ]; then
         exit 1
     fi
 
@@ -182,7 +179,7 @@ if [ "$FLAG_i" ]; then
             echo "VirtualBox がインストールされていません。"
             echo "VirtualBox 4.3.30 をインストールしてください。"
             echo "Download: https://www.virtualbox.org/wiki/Download_Old_Builds_4_3"
-            echo "※OS X の場合で Homebrew を利用している場合、Homebrew cask でもインストール可能です。"
+            echo "※OS X で Homebrew を利用している場合、brew cask でもインストール可能です。"
             exit 1
         fi
     else
@@ -195,7 +192,10 @@ if [ "$FLAG_i" ]; then
     fi
 
     latest=`curl -sI https://github.com/vccw-team/vccw/releases/latest | awk -F'/' '/^Location:/{print $NF}' | tr -d '\r'`
-    wget https://github.com/vccw-team/vccw/archive/${latest}.zip
+
+    if [ ! -e ${latest}.zip ]; then
+        curl -LOk https://github.com/vccw-team/vccw/archive/${latest}.zip
+    fi
 
     if [ ! -e ${latest}.zip ]; then
         echo "VCCW をダウンロードできませんでした。"

@@ -53,10 +53,23 @@ theme_unit_test_uri: https://raw.githubusercontent.com/jawordpressorg/theme-test
 #
 plugins:
   - ajax-thumbnail-rebuild
+  - akismet
+  - debug-bar
+  - debug-bar-console
+  - debug-bar-cron
+  - debug-bar-cron
+  - debug-bar-extender
   - dynamic-hostname
-  - developer
-  - wp-multibyte-patch
+  - jetpack
+  - monster-widget
   - mw-wp-form
+  - rewrite-rules-inspector
+  - simply-show-ids
   - smart-custom-fields
+  - theme-check
+  - user-switching
+  - va-simple-expires
+  - wordpress-importer
   - wordpress-seo
+  - wp-multibyte-patch
   - wp-sweep

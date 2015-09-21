@@ -77,13 +77,13 @@ class VISUALIVE_THEME_DEFINE extends VISUALIVE_SINGLETON {
 	 * This hook is called once any activated themes have been loaded.
 	 */
 	protected function __construct( $settings = array() ) {
-		$theme             = get_file_data( STYLESHEETPATH . '/style.css', array( 'name' => 'Theme Name', 'version' => 'Version', 'text_domain' => 'Text domain', 'domain_path' => 'Domain path' ), 'theme' );
+		$theme             = get_file_data( get_stylesheet_directory() . '/style.css', array( 'name' => 'Theme Name', 'version' => 'Version', 'text_domain' => 'Text domain' ), 'theme' );
 		$this->version     = $theme['version'];
 		$this->name_raw    = $theme['name'];
-		$this->name        = str_replace( '--', '-file', preg_replace( '/\A-/u', 'theme-', preg_replace( array( '/[ぁ-んァ-ンヶー一-龠]/u', '/[^a-zA-Z0-9]/u' ), array( '', '-' ), mb_strtolower( $this->name_raw ) ) ) );
+		$this->name        = wp_basename( get_stylesheet_directory() );
 		$this->uri         = get_stylesheet_directory_uri();
 		$this->path        = get_stylesheet_directory();
 		$this->text_domain = $theme['text_domain'];
-		$this->domain_path = $theme['domain_path'];
+		$this->domain_path = get_template_directory() . '/languages';
 	}
 }

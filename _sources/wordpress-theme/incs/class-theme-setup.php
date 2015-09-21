@@ -95,6 +95,12 @@ class VISUALIVE_THEME_SETUP extends VISUALIVE_SINGLETON {
 		} );
 
 		/**
+		 * Define content width var
+		 */
+		global $content_width;
+		$content_width = 745;
+
+		/**
 		 * Let WordPress manage the document title.
 		 * By adding theme support, we declare that this theme does not use a
 		 * hard-coded <title> tag in the document head, and expect WordPress to
@@ -125,14 +131,6 @@ class VISUALIVE_THEME_SETUP extends VISUALIVE_SINGLETON {
 		 * specifically font, colors, icons, and column width.
 		 */
 		add_editor_style( 'style-editor.min.css' );
-
-		/**
-		 * Creates the generator XML or Comment for RSS, ATOM, etc.
-		 */
-//		add_filter( 'the_generator', array( &$this, 'get_the_generator' ), 10, 2 );
-//		foreach ( $this->feeds as $feed ) {
-//			add_action( $feed, array( &$this, 'the_generator' ) );
-//		}
 
 		/**
 		 * Change front page title.
@@ -213,91 +211,6 @@ class VISUALIVE_THEME_SETUP extends VISUALIVE_SINGLETON {
 	}
 
 	/**
-	 * Filter the output of the XHTML generator tag for display.
-	 *
-	 * @param string $type The type of generator to output. Accepts (html|xhtml|atom|rss2|rdf|comment|export).
-	 */
-	public function the_generator( $type ) {
-		echo apply_filters( $this->theme->text_domain . '_the_generator', self::get_the_generator($type), $type ) . "\n";
-	}
-
-	/**
-	 * Creates the generator XML or Comment for RSS, ATOM, etc.
-	 *
-	 * @param string $html The generator output.
-	 * @param string $type The type of generator to return - (html|xhtml|atom|rss2|rdf|comment|export).
-	 *
-	 * @return string The HTML content for the generator.
-	 */
-	public function get_the_generator( $html = '', $type = '' ) {
-		$generator_name    = apply_filters( 'visualive_generator_name',    $this->theme->name_raw );
-		$generator_version = apply_filters( 'visualive_generator_version', $this->theme->version  );
-		$generator_url     = home_url('');
-		$gen               = '';
-
-		if ( empty( $type ) ) {
-
-			$current_filter = current_filter();
-			if ( empty( $current_filter ) )
-				return;
-
-			switch ( $current_filter ) {
-				case 'rss2_head' :
-				case 'commentsrss2_head' :
-					$type = 'rss2';
-					break;
-				case 'rss_head' :
-				case 'opml_head' :
-					$type = 'comment';
-					break;
-				case 'rdf_header' :
-					$type = 'rdf';
-					break;
-				case 'atom_head' :
-				case 'comments_atom_head' :
-				case 'app_head' :
-					$type = 'atom';
-					break;
-			}
-		}
-
-		switch ( $type ) {
-			case 'html':
-				$gen = '<meta name="generator" content="' . $generator_name . ' - ' . $generator_version . '">';
-				break;
-			case 'xhtml':
-				$gen = '<meta name="generator" content="' . $generator_name . ' - ' . $generator_version . '" />';
-				break;
-			case 'atom':
-				$gen = '<generator uri="' . $generator_url . '/" version="' . $generator_version . '">' . $generator_name . '</generator>';
-				break;
-			case 'rss2':
-				$gen = '<generator>' . $generator_url . '/?v=' . $generator_version . '</generator>';
-				break;
-			case 'rdf':
-				$gen = '<admin:generatorAgent rdf:resource="' . $generator_url . '/?v=' . $generator_version . '" />';
-				break;
-			case 'comment':
-				$gen = '<!-- generator="' . $generator_name . '/' . $generator_version . '" -->';
-				break;
-			case 'export':
-				$gen = '<!-- generator="' . $generator_name . '/' . $generator_version . '" created="'. date('Y-m-d H:i') . '" -->';
-				break;
-		}
-
-		/**
-		 * Filter the HTML for the retrieved generator type.
-		 *
-		 * The dynamic portion of the hook name, `$type`, refers to the generator type.
-		 *
-		 * @param string $gen  The HTML markup output to {@see wp_head()}.
-		 * @param string $type The type of generator. Accepts 'html', 'xhtml', 'atom',
-		 *                     'rss2', 'rdf', 'comment', 'export'.
-		 */
-		return apply_filters( $this->theme->text_domain . "_get_the_generator_{$type}", $gen, $type );
-	}
-
-	/**
 	 * Change front page title.
 	 *
 	 * @param string $title       Page title.
@@ -322,24 +235,25 @@ class VISUALIVE_THEME_SETUP extends VISUALIVE_SINGLETON {
 	 * @since CherryBlossom 1.0.0
 	 */
 	public function wp_enqueue_scripts() {
+		$suffix  = ( !defined( 'WP_DEBUG' ) || ( defined( 'WP_DEBUG' ) && !WP_DEBUG ) ) ? '.min' : '' ;
 		$scripts = array(
 			array(
 				'handle' => $this->theme->name,
-				'src'    => $this->theme->uri . '/style.min.css',
+				'src'    => $this->theme->uri . '/style' . $suffix . '.css',
 				'deps'   => array(),
 				'ver'    => $this->theme->version,
 			),
 			array(
-				'handle'    => 'jquery',
-				'src'       => $this->theme->uri . '/assets/js/script.min.js',
-				'deps'      => array(),
+				'handle'    => $this->theme->name,
+				'src'       => $this->theme->uri . '/assets/js/script' . $suffix . '.js',
+				'deps'      => array( 'jquery' ),
 				'ver'       => $this->theme->version,
 				'in_footer' => true
 			),
 			array(
 				'handle'    => $this->theme->name . '-ie',
-				'src'       => $this->theme->uri . '/assets/js/ie.min.js',
-				'deps'      => array( 'jquery' ),
+				'src'       => $this->theme->uri . '/assets/js/ie' . $suffix . '.js',
+				'deps'      => array( $this->theme->name ),
 				'ver'       => $this->theme->version,
 				'in_footer' => false,
 				'data'      => array(
@@ -349,11 +263,6 @@ class VISUALIVE_THEME_SETUP extends VISUALIVE_SINGLETON {
 				)
 			)
 		);
-
-		/**
-		 * Remove a registered script.
-		 */
-		wp_deregister_script( 'jquery' );
 
 		/**
 		 * Load our framework stylesheet and javascript.
