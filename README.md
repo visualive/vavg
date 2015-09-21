@@ -1,4 +1,4 @@
-VisuAlive + VCCW + Gulp (vavg)
+VisuAlive + VCCW + Gulp (VAVG)
 =========================
 
 簡単なコマンドを実行するだけで、WordPress の開発環境 ( VCCW ) と Gulp ( Scss のビルドや BrowserSync など ) 環境を整えることができます。
@@ -15,12 +15,10 @@ VisuAlive + VCCW + Gulp (vavg)
 
 * [Vagrant](https://www.vagrantup.com/)
 * [Node.js](http://nodejs.jp/)
-* [Cygwin](https://cygwin.com/)  
-    * Cygwin 本体、wget / curl / unzip / Ruby / Rubygems をインストールする。
-* [ImageMagick](http://www.imagemagick.org/script/binary-releases.php#windows)  
-    * Cygwin でもインストール可能。
+* [Cygwin](https://cygwin.com/)
+    * Cygwin で、wget / curl / unzip / Ruby / Rubygems / ImageMagick をインストールする。
 
-Windows での作業は全て、Cygwin で行ってください。ただし、起動できるかは分かりません。
+Windows での作業は全て Cygwin で行ってください。ただし、起動できるかは分かりません。
 
 ## How to use
 
