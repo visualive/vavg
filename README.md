@@ -30,7 +30,7 @@ Windows での作業は全て Cygwin で行ってください。ただし、起�
 $ wget http://github.com/kuck1u/vavg/archive/master.zip && \
 unzip ./master.zip && \
 rm -rf ./master.zip && \
-mv ./vavg-master/* ./ && \
+mv ./vavg-master/* ./vavg-master/.[^\.]* ./ && \
 rm -rf ./vavg-master && \
 chmod u+x ./vavg && \
 ./vavg -i -s
@@ -46,7 +46,7 @@ $ cd /Users/YOURNAME/PhpstormProjects/TEST/
 $ wget http://github.com/kuck1u/vavg/archive/master.zip && \
 unzip ./master.zip && \
 rm -rf ./master.zip && \
-mv ./vavg-master/* ./ && \
+mv ./vavg-master/* ./vavg-master/.[^\.]* ./ && \
 rm -rf ./vavg-master && \
 chmod u+x ./vavg
 
