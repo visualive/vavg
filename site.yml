@@ -55,11 +55,14 @@ plugins:
   - ajax-thumbnail-rebuild
   - akismet
   - debug-bar
+  - debug-bar-actions-and-filters-addon
   - debug-bar-console
   - debug-bar-cron
-  - debug-bar-cron
   - debug-bar-extender
+  - debug-bar-slow-actions
   - dynamic-hostname
+  - log-deprecated-notices
+  - log-viewer
   - jetpack
   - monster-widget
   - mw-wp-form
