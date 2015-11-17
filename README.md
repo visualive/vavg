@@ -27,15 +27,15 @@ Windows での作業は全て Cygwin で行ってください。ただし、起�
 とりあえず試してみたい場合。
 
 ```
-$ mkdir ./vavg_test && \
-cd ./vavg_test && \
-wget http://github.com/kuck1u/vavg/archive/master.zip && \
-unzip ./master.zip && \
-rm -rf ./master.zip && \
-mv ./vavg-master/* ./vavg-master/.[^\.]* ./ && \
-rm -rf ./vavg-master && \
-chmod u+x ./vavg && \
-./vavg -i -s
+# Master
+$ curl -LOk https://gist.githubusercontent.com/kuck1u/8d876e888ad0a0aa9be5/raw/1e863de448d297b318641c35f35564a711dfdf6f/vavgtest && \
+chmod u+x ./vavgtest && \
+./vavgtest
+
+# Develop
+$ curl -LOk https://gist.githubusercontent.com/kuck1u/8d876e888ad0a0aa9be5/raw/1e863de448d297b318641c35f35564a711dfdf6f/vavgtest_dev && \
+chmod u+x ./vavgtest_dev && \
+./vavgtest_dev
 ```
 
 ### VAVG を起動させる
