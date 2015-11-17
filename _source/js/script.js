@@ -9,5 +9,4 @@
  */
 jQuery(function($){
 	'use strict';
-    var k = 'kuck1u';
 });
