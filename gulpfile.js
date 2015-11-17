@@ -199,6 +199,15 @@ gulp.task('font', function () {
 });
 
 
+/*****************
+ *****  PHP  *****
+ *****************/
+gulp.task('php', function () {
+    return gulp.src(themePath + '/**/*.php')
+        .pipe(browserSyncReload({stream: true}));
+});
+
+
 /**********************
  *****  Archives  *****
  **********************/
@@ -264,8 +273,8 @@ gulp.task('watch', function () {
     $.watch(sources.img.files, function () {
         return gulp.start(['img']);
     });
-    $.watch([themePath + '/*.php'], function () {
-        return gulp.start(['browserSyncReloadStream']);
+    $.watch([themePath + '/**/*.php'], function () {
+        return gulp.start(['php']);
     });
 });
 
