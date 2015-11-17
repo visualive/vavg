@@ -3,7 +3,7 @@
 #
 underscore: false
 web_font: false
-css_framework: foundation
+bootstrap: false
 
 #
 # WordPress Theme name

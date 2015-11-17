@@ -27,7 +27,9 @@ Windows での作業は全て Cygwin で行ってください。ただし、起�
 とりあえず試してみたい場合。
 
 ```
-$ wget http://github.com/kuck1u/vavg/archive/master.zip && \
+$ mkdir ./vavg_test && \
+cd ./vavg_test && \
+wget http://github.com/kuck1u/vavg/archive/master.zip && \
 unzip ./master.zip && \
 rm -rf ./master.zip && \
 mv ./vavg-master/* ./vavg-master/.[^\.]* ./ && \
@@ -50,10 +52,7 @@ mv ./vavg-master/* ./vavg-master/.[^\.]* ./ && \
 rm -rf ./vavg-master && \
 chmod u+x ./vavg
 
-# テーマファイル名を編集
-$ vi ./_sources/scss/style.scss
-
-# VCCW の設定ファイルを編集
+# 設定ファイルを編集
 $ vi ./site.yml
 
 # VAVG のインストールと起動
@@ -74,6 +73,16 @@ $ ./vavg -s
 $ vagrant halt
 ```
 
+### Setting file
+
+設定を変更する場合は、site.yml を編集する。VAVG 特有の設定は以下の表の通り。
+
+| 項目       | 説明                                                                                           | 初期値 |
+|:-----------|:-----------------------------------------------------------------------------------------------|:-------|
+| underscore | WordPress Starter Teema の _s を使用するか否か                                                 | false  |
+| web_font   | ウェブフォントを使用するか否か。使用する場合は、genericons または fontawesome のどちらかを指定 | false  |
+| bootstrap  | CSS フレームワークの Bootstrap を使用するか否か。Bootstrap を使用しない場合は Fondation となる | false  |
+
 ### Options
 #### Install mode
 
@@ -87,16 +96,18 @@ $ ./vavg -i
 $ ./vavg -s
 ```
 
+### npm commands
+[VisuAlive Web Starter](https://github.com/kuck1u/visualive-web-starter) を参照。
+
 ## Support OS
 
 * OSX: 10.10.5
 * Windows: not tested
 
-## Hint
-
-デプロイ（または、Git へのコミットなど）する前に、wp-config.php の WP_DEBUG 定数を falseにし、`$ gulp build` 後に動作確認を行ってから、デプロイするようにしましょう。
-
 ## Change log
+* v2.0.0  
+VisuAlive Web Starter を移植。  
+_s 、ウェブフォント、Bootstrap の使用有無を選択できるように変更。
 * v1.1.0  
 メンテナンスリリース。  
 軽いバグフィックス、Gulp 実行の高速化 etc。

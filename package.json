@@ -48,9 +48,9 @@
     "run-sequence": "^1.1.4"
   },
   "scripts": {
-    "bower": "node_modules/.bin/bower",
-    "gulp": "node_modules/.bin/gulp",
-    "archive": "node_modules/.bin/gulp archive",
-    "supply": "node_modules/.bin/gulp supply"
+    "bower": "./node_modules/.bin/bower",
+    "gulp": "./node_modules/.bin/gulp",
+    "archive": "./node_modules/.bin/gulp archive",
+    "supply": "./node_modules/.bin/gulp supply"
   }
 }
