@@ -1,5 +1,5 @@
 /*!
- Theme Name: VAVG Starter Theme
+ Theme Name: VAVG Starter Theme (Bootstrap)
  Version: 1.0.0
  Description: VAVG WordPress Theme by KUCKLU and VisuAlive
  Author: kuck1u
@@ -31,18 +31,7 @@
  http://www.gnu.org/licenses/gpl-2.0.txt
 */
 
-@import "functions";
-@import "settings";
 @import "normalize";
-@import "genericons";
-@import "foundation/scss/foundation/components/visibility";
-@import "foundation/scss/foundation/components/grid";
-@import "foundation/scss/foundation/components/block-grid";
-@import "foundation/scss/foundation/components/forms";
-@import "bower_components/jqueryui-smoothness/themes/smoothness/jquery-ui.min.css";
-@import "bower_components/jqueryui-smoothness/themes/smoothness/theme.css";
-@import "slick";
-@import "slick-theme";
+@import "bootstrap-sprockets";
+@import "bootstrap";
 @import "editor";
-@import "datepicker";
-@import "form";

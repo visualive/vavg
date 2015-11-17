@@ -1,8 +1,17 @@
 /*!
- WordPress editor style.
+ Theme Name: VAVG Starter Theme (Foundation)
+ Version: 1.0.0
+ Description: VAVG WordPress Theme by KUCKLU and VisuAlive
+ Author: kuck1u
+ Author URI: https://github.com/kuck1u/vavg
+ Theme URI: https://github.com/kuck1u/vavg
+ License: GNU General Public License version 2.0 later
+ License URI: http://www.gnu.org/licenses/gpl-2.0.html
+ Tags: light, responsive-layout, custom-background, threaded-comments, custom-menu, featured-images, full-width-template, theme-options, translation-ready
+ Text domain: vavg-starter-theme
+ Domain path: /langs
 
-
- Copyright (C) 2015  KUCKLU and VisuAlive.
+ Copyright (C) 2015 Your name.
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -22,11 +31,8 @@
  http://www.gnu.org/licenses/gpl-2.0.txt
 */
 
-@import "functions";
 @import "settings";
 @import "normalize";
-@import "genericons";
-@import "foundation/scss/foundation/components/visibility";
-@import "foundation/scss/foundation/components/grid";
-@import "foundation/scss/foundation/components/block-grid";
+@import "foundation";
+// @import "foundation/components/visibility";
 @import "editor";

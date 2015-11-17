@@ -33,7 +33,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  */
 spl_autoload_register( function( $class_name ) {
 	$_class_name = str_replace( array( 'VISUALIVE', 'CHERRYBLOSSOM', '_'), array( 'class', 'class', '-' ), $class_name );
-	$path        = __DIR__ . DIRECTORY_SEPARATOR . 'incs' . DIRECTORY_SEPARATOR . mb_strtolower( $_class_name ) . '.php';
+	$path        = __DIR__ . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . mb_strtolower( $_class_name ) . '.php';
 
 	if ( file_exists( $path ) ) {
 		require_once $path;

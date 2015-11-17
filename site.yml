@@ -1,4 +1,22 @@
 #
+# Framework
+#
+underscore: false
+web_font: false
+css_framework: foundation
+
+#
+# WordPress Theme name
+#
+theme_dir_name: vavg
+
+#
+# WordPress Default Theme
+# Theme's slug or url to the theme's .zip.
+#
+theme: ''
+
+#
 # Virtual Machine Settings
 #
 memory: 2018
@@ -9,13 +27,20 @@ cpus: 2
 #
 hostname: vavg.example.com
 ip: 192.168.33.10
-sync_folder: '.'
+sync_folder: .
 
 #
 # WordPress Database
 #
 db_prefix: wp_
 db_host: 192.168.33.10
+
+#
+# WordPress User
+#
+admin_user: admin
+admin_pass: admin
+admin_email: vccw@example.com
 
 #
 # WordPress Settings
@@ -31,17 +56,6 @@ wp_debug: true
 savequeries: true
 
 #
-# WordPress Default Theme
-# Theme's slug or url to the theme's .zip.
-#
-theme: 'vavg'
-
-#
-# WordPress Theme name
-#
-themeDirName: 'vavg'
-
-#
 # Theme unit testing
 #
 theme_unit_test: true
@@ -53,7 +67,6 @@ theme_unit_test_uri: https://raw.githubusercontent.com/jawordpressorg/theme-test
 #
 plugins:
   - ajax-thumbnail-rebuild
-  - akismet
   - debug-bar
   - debug-bar-actions-and-filters-addon
   - debug-bar-console

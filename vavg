@@ -1,7 +1,40 @@
 #!/bin/sh
+
+parse_yaml() {
+    local prefix=$2
+    local s
+    local w
+    local fs
+    s='[[:space:]]*'
+    w='[a-zA-Z0-9_]*'
+    fs="$(echo @|tr @ '\034')"
+    sed -ne "s|^\($s\)\($w\)$s:$s\"\(.*\)\"$s\$|\1$fs\2$fs\3|p" \
+        -e "s|^\($s\)\($w\)$s[:-]$s\(.*\)$s\$|\1$fs\2$fs\3|p" "$1" |
+    awk -F"$fs" '{
+      indent = length($1)/7;
+      if (length($2) == 0) { conj[indent]="+";} else {conj[indent]="";}
+      vname[indent] = $2;
+      for (i in vname) {if (i > indent) {delete vname[i]}}
+      if (length($3) > 0) {
+              vn=""; for (i=0; i<indent; i++) {vn=(vn)(vname[i])("_")}
+              printf("%s%s%s%s=(\"%s\")\n", "'"$prefix"'",vn, $2, conj[indent-1],$3);
+      }
+    }' | sed 's/_=/+=/g'
+}
+
 PROGNAME=$(basename $0)
-VERSION="1.1.0"
+VERSION="2.0.0"
 DIR=$(cd $(dirname $0); pwd)
+UNDERSCORE=$DIR/bower_components/_s
+GENERICONS=$DIR/bower_components/Genericons
+FONTAWESOME=$DIR/bower_components/font-awesome
+BOOTSTRAP=$DIR/bower_components/bootstrap-sass/assets
+FOUNDATION=$DIR/bower_components/foundation/scss
+WP_THEMES_DIR=$DIR/wp-content/themes
+
+eval $(parse_yaml $DIR/site.yml CONFIG_)
+
+THEMES_DIR=$WP_THEMES_DIR/$CONFIG_theme_dir_name
 
 usage() {
     echo "Usage: $PROGNAME [OPTIONS] FILE"
@@ -42,8 +75,10 @@ do
     shift
 done
 
-if [ "$FLAG_i" ]; then
+vavg_install() {
     echo "VAVG のセットアップを開始します。"
+
+    mkdir $DIR/.tmp/
 
     if [ ! -x "`which vagrant`" ]; then
         echo "Vagrant がインストールされていません。"
@@ -116,34 +151,6 @@ if [ "$FLAG_i" ]; then
         fi
     fi
 
-    if [ ! -x "`which bower`" ]; then
-        if [ ! -x "`which bower`" ] && [ "$(uname)" == "Darwin" ]; then
-            sudo npm install -g bower
-        elif [ ! -x "`which bower`" ]; then
-            npm install -g bower
-        fi
-
-        if [ ! -x "`which bower`" ]; then
-            echo "Bower のインストールを試みましたが、インストールに失敗しました。"
-            echo "手動で '$ sudo npm install –g bower' を実行してください。"
-            exit 1
-        fi
-    fi
-
-    if [ ! -x "`which gulp`" ]; then
-        if [ ! -x "`which gulp`" ] && [ "$(uname)" == "Darwin" ]; then
-            sudo npm install gulp –g
-        elif [ ! -x "`which gulp`" ]; then
-            npm install gulp -g
-        fi
-
-        if [ ! -x "`which gulp`" ]; then
-            echo "Gulp のインストールを試みましたが、インストールに失敗しました。"
-            echo "手動で '$ sudo npm install –g gulp' を実行してください。"
-            exit 1
-        fi
-    fi
-
     if [ ! -e bower.json ]; then
         echo "bower.json がありません。"
     fi
@@ -160,33 +167,86 @@ if [ "$FLAG_i" ]; then
         echo ".csscomb.json がありません。"
     fi
 
-    if [ ! -x "`which vagrant`" ] || [ ! -x "`which node`" ] || [ ! -x "`which npm`" ] || [ ! -x "`which ruby`" ] || [ ! -x "`which gem`" ] || [ ! -x "`which convert`" ] || [ ! -x "`which sass`" ] || [ ! -x "`which compass`" ] || [ ! -x "`which bower`" ] || [ ! -x "`which gulp`" ] || [ ! -e bower.json ] || [ ! -e package.json ] || [ ! -e gulpfile.js ] || [ ! -e ".csscomb.json" ]; then
+    if [ ! -x "`which vagrant`" ] || [ ! -x "`which node`" ] || [ ! -x "`which npm`" ] || [ ! -x "`which ruby`" ] || [ ! -x "`which gem`" ] || [ ! -x "`which convert`" ] || [ ! -x "`which sass`" ] || [ ! -x "`which compass`" ] || [ ! -e bower.json ] || [ ! -e package.json ] || [ ! -e gulpfile.js ] || [ ! -e ".csscomb.json" ]; then
         exit 1
     fi
 
-    bower install
+    npm install
+    $DIR/node_modules/.bin/bower install
 
-    if [ "$(uname)" == "Darwin" ]; then
-        sudo npm install
+    mkdir -p $THEMES_DIR/_source/scss/
+    mkdir -p $THEMES_DIR/_source/js/
+    mkdir -p $THEMES_DIR/_source/font/
+    mkdir -p $THEMES_DIR/_source/img/
+    mkdir -p $THEMES_DIR/assets/
+    cp -r $DIR/_source/scss/*.scss $THEMES_DIR/_source/scss/
+    cp -r $DIR/bower_components/normalize-scss/_normalize.scss $THEMES_DIR/_source/scss/
+    cp -r $DIR/_source/js/ $THEMES_DIR/_source/js/
+
+    if [ "$CONFIG_css_framework" == "bootstrap" ]; then
+        $DIR/node_modules/.bin/bower install bootstrap-sass-official
+        # cp $BOOTSTRAP/stylesheets/_bootstrap-sprockets.scss $THEMES_DIR/_source/scss/
+        cp $BOOTSTRAP/stylesheets/_bootstrap.scss $THEMES_DIR/_source/scss/
+        cp -r $BOOTSTRAP/fonts/* $THEMES_DIR/_source/font/
+        cp $DIR/_source/scss/bootstrap/*.scss $THEMES_DIR/_source/scss/
     else
-        npm install
+        $DIR/node_modules/.bin/bower install foundation
+        cp $FOUNDATION/foundation.scss $THEMES_DIR/_source/scss/_foundation.scss
+        cp $FOUNDATION/foundation/_settings.scss $THEMES_DIR/_source/scss/_settings.scss
+        cp $DIR/_source/scss/foundation/*.scss $THEMES_DIR/_source/scss/
     fi
 
-    gulp vavg
+    if [ $CONFIG_web_font == "genericons" ]; then
+        mkdir -p $DIR/.tmp/genericons/
+        curl -LOk http://genericons.com/wp-content/themes/a8c/genericons/genericons.zip
+        unzip genericons.zip -d $DIR/.tmp/genericons/
+        mkdir -p $THEMES_DIR/_source/font/genericons/
+        cp $DIR/.tmp/genericons/genericons/* $THEMES_DIR/_source/font/genericons/
+        rm -rf $THEMES_DIR/_source/font/genericons/*.css
+        cp $DIR/_source/scss/genericons/*.scss $THEMES_DIR/_source/scss/
+    fi
+
+    if [ $CONFIG_web_font == "fontawesome" ]; then
+        $DIR/node_modules/.bin/bower install fontawesome
+        mkdir -p $THEMES_DIR/_source/scss/fontawesome/
+        mkdir -p $THEMES_DIR/_source/font/fontawesome/
+        cp $FONTAWESOME/scss/*.scss $THEMES_DIR/_source/scss/fontawesome/
+        mv $THEMES_DIR/_source/scss/fontawesome/font-awesome.scss $THEMES_DIR/_source/scss/_fontawesome.scss
+        cp $FONTAWESOME/fonts/* $THEMES_DIR/_source/font/fontawesome/
+    fi
+
+    if [ $CONFIG_underscore == true ]; then
+        rm -rf $UNDERSCORE
+        npm run bower install https://github.com/Automattic/_s.git
+        mkdir -p $THEMES_DIR/languages/
+        mkdir -p $THEMES_DIR/inc/
+        mkdir -p $THEMES_DIR/template-parts/
+        cp -r $UNDERSCORE/*.php $THEMES_DIR/
+        cp -r $UNDERSCORE/inc/*.php $THEMES_DIR/inc/
+        cp -r $UNDERSCORE/template-parts/*.php $THEMES_DIR/template-parts/
+        cp $UNDERSCORE/languages/* $THEMES_DIR/languages/
+        cp $UNDERSCORE/js/*.js $THEMES_DIR/_source/js/
+    else
+        cp -r $DIR/_source/wordpress-theme/default/ $THEMES_DIR/
+    fi
+
+    if [ $CONFIG_underscore == false ] && [ "$CONFIG_css_framework" == "foundation" ]; then
+        cp -r $DIR/_source/wordpress-theme/vavg/ $THEMES_DIR/
+    fi
+
+    $DIR/node_modules/.bin/gulp install
 
     if [ "$(uname)" == "Darwin" ]; then
         if [ ! -x "`which VBoxManage`" ]; then
             echo "VirtualBox がインストールされていません。"
-            echo "VirtualBox 4.3.30 をインストールしてください。"
-            echo "Download: https://www.virtualbox.org/wiki/Download_Old_Builds_4_3"
+            echo "VirtualBox をインストールしてください。"
             echo "※OS X で Homebrew を利用している場合、brew cask でもインストール可能です。"
             exit 1
         fi
     else
         if [ ! -e "C:\Program Files\Oracle\VirtualBox\VBoxManage.exe" ]; then
             echo "VirtualBox がインストールされていません。"
-            echo "VirtualBox 4.3.30 をインストールしてください。"
-            echo "Download: https://www.virtualbox.org/wiki/Download_Old_Builds_4_3"
+            echo "VirtualBox をインストールしてください。"
             exit 1
         fi
     fi
@@ -222,6 +282,10 @@ if [ "$FLAG_i" ]; then
     fi
 
     echo "VAVG のインストールが完了しました。"
+}
+
+if [ "$FLAG_i" ]; then
+    vavg_install
 fi
 
 if [ "$FLAG_s" ]; then
@@ -231,5 +295,5 @@ if [ "$FLAG_s" ]; then
         vagrant up
     fi
 
-    gulp
+    $DIR/node_modules/.bin/gulp default
 fi

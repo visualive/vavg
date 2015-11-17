@@ -1,14 +1,14 @@
 {
-  "name": "VAVG",
+  "name": "VisuAlive Web Starter",
   "description": "",
   "version": "1.0.0",
-  "license": "GNU General Public License version 2.0 later",
+  "license": "MIT License",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kuck1u/vavg.git"
+    "url": "https://github.com/kuck1u/visualive-web-starter.git"
   },
   "devDependencies": {
-    "foundation": "zurb/bower-foundation",
+    "fastclick": "~1.0.6",
     "shufflejs": "~3.1.1",
     "slick-carousel": "~1.5.5",
     "jQuery.mmenu": "~5.3.3",
