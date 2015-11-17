@@ -235,6 +235,7 @@ vavg_install() {
     fi
 
     $DIR/node_modules/.bin/gulp install
+    rm -rf $DIR/_source/
 
     if [ "$(uname)" == "Darwin" ]; then
         if [ ! -x "`which VBoxManage`" ]; then

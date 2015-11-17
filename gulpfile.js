@@ -69,7 +69,7 @@ var gulp              = require('gulp'),
         }
     };
 
-if(settings.css_framework == 'bootstrap') {
+if(settings.bootstrap == true) {
     sources.scss.inc = rootPath + '/bower_components/bootstrap-sass/assets/stylesheets';
     sources.scss.px  = '14px';
 } else {
