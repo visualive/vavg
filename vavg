@@ -222,6 +222,7 @@ vavg_install() {
         mkdir -p $THEMES_DIR/inc/
         mkdir -p $THEMES_DIR/template-parts/
         cp -r $UNDERSCORE/*.php $THEMES_DIR/
+        cp -r $UNDERSCORE/*.md $THEMES_DIR/
         cp -r $UNDERSCORE/inc/*.php $THEMES_DIR/inc/
         cp -r $UNDERSCORE/template-parts/*.php $THEMES_DIR/template-parts/
         cp $UNDERSCORE/languages/* $THEMES_DIR/languages/
