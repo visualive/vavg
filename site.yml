@@ -2,8 +2,9 @@
 # Framework
 #
 underscore: false
-web_font: false
 bootstrap: false
+# genericons or fontawesome
+web_font: false
 
 #
 # WordPress Theme name
