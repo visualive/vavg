@@ -118,14 +118,14 @@ gulp.task('scss', function () {
             cascade: false
         }))
         // .pipe($.csscomb())
-        .pipe(gulp.dest(sources.scss.tmp))
-        .pipe(gulp.dest(sources.scss.dest))
-        .pipe($.size({title: 'Style'}))
-        .pipe($.rename({suffix: '.min'}))
+        // .pipe(gulp.dest(sources.scss.tmp))
+        // .pipe(gulp.dest(sources.scss.dest))
+        // .pipe($.size({title: 'Style'}))
+        // .pipe($.rename({suffix: '.min', extname: '.css'}))
         .pipe($.cssmin())
-        .pipe($.size({title: 'Style:min'}))
         .pipe(gulp.dest(sources.scss.tmp))
         .pipe(gulp.dest(sources.scss.dest))
+        .pipe($.size({title: 'Style:min'}))
         .pipe(browserSyncReload({stream: true}));
 });
 
@@ -146,7 +146,7 @@ gulp.task('js', function () {
         .pipe($.uglify({preserveComments: 'some'}))
         .pipe($.size({title: 'js'}))
         .pipe(gulp.dest(sources.js.dest))
-        .pipe(browserSync.reload({stream: true, once: true}));
+        .pipe(browserSyncReload({stream: true}));
 });
 
 gulp.task('js:ie', function () {
@@ -158,7 +158,8 @@ gulp.task('js:ie', function () {
         .pipe($.crLfReplace({changeCode: 'LF'}))
         .pipe($.rename({suffix: '.min'}))
         .pipe($.uglify({preserveComments: 'some'}))
-        .pipe(gulp.dest(sources.js.dest));
+        .pipe(gulp.dest(sources.js.dest))
+        .pipe(browserSyncReload({stream: true}));
 });
 
 
@@ -193,7 +194,8 @@ gulp.task('img', function () {
  ******************/
 gulp.task('font', function () {
     return gulp.src(sources.font.files)
-        .pipe(gulp.dest(sources.font.dest));
+        .pipe(gulp.dest(sources.font.dest))
+        .pipe(browserSyncReload({stream: true}));
 });
 
 
@@ -212,13 +214,15 @@ gulp.task('archive', function () {
  *****  Browser sync  *****
  **************************/
 gulp.task('browserSync', function () {
-    return browserSync.init(null, {
-        proxy: settings.hostname,
-        notify: false
+    return browserSync.init({
+        proxy: 'http://' + settings.hostname
     });
 });
-gulp.task('browserSyncReload', function () {
-    return browserSyncReload();
+gulp.task('browserSyncReloadStream', function () {
+    return browserSyncReload({stream: true});
+});
+gulp.task('browserSyncReloadStreamOnce', function () {
+    return browserSyncReload({stream: true, once: true});
 });
 
 
@@ -259,6 +263,9 @@ gulp.task('watch', function () {
     });
     $.watch(sources.img.files, function () {
         return gulp.start(['img']);
+    });
+    $.watch([themePath + '/*.php'], function () {
+        return gulp.start(['browserSyncReloadStream']);
     });
 });
 
