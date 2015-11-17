@@ -1,8 +1,10 @@
 *
 !_source/
-!vavg
 !.csscomb.json
 !.gitignore
 !bower.json
+!gulpfile.js
 !package.json
 !site.yml
+!README.md
+!vavg
