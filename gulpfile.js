@@ -252,7 +252,7 @@ gulp.task('clean', $.shell.task(
  *******************/
 gulp.task('watch', function () {
     $.watch(sources.scss.files, function () {
-        return gulp.start(['sass']);
+        return gulp.start(['scss']);
     });
     $.watch(sources.js.files, function () {
         return gulp.start(['js']);
