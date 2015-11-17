@@ -79,7 +79,7 @@ $ vagrant halt
 
 | 項目       | 説明                                                                                           | 初期値 |
 |:-----------|:-----------------------------------------------------------------------------------------------|:-------|
-| underscore | WordPress Starter Teema の _s を使用するか否か                                                 | false  |
+| underscore | WordPress Starter Theme の _s を使用するか否か                                                 | false  |
 | web_font   | ウェブフォントを使用するか否か。使用する場合は、genericons または fontawesome のどちらかを指定 | false  |
 | bootstrap  | CSS フレームワークの Bootstrap を使用するか否か。Bootstrap を使用しない場合は Fondation となる | false  |
 
