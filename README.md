@@ -56,13 +56,13 @@ chmod u+x ./vavg
 $ vi ./site.yml
 
 # VAVG のインストールと起動
-$ ./vavg -i -s
+$ ./vavg -i -g
 ```
 
 2 回目以降は下記コマンドで、VCCW と Gulp がスタートする。
 
 ```
-$ ./vavg -s
+$ ./vavg -g
 ```
 
 ### VAVG を終了させる
