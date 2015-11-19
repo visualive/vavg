@@ -271,17 +271,16 @@ vavg_setup() {
         $DIR/node_modules/.bin/bower install
     fi
 
-
     if [ $CONFIG_wp_starter_theme == "sage" ]; then
         cd $DIR/
     fi
 
-    if [ $CONFIG_bootstrap == true ] || [ $CONFIG_wp_starter_theme != "sage" ]; then
-        mkdir $THEMES_DIR/_source/scss/
-        mkdir $THEMES_DIR/_source/js/
-        mkdir $THEMES_DIR/_source/font/
-        mkdir $THEMES_DIR/_source/img/
-        mkdir $THEMES_DIR/assets/
+    if [ $CONFIG_wp_starter_theme != "sage" ]; then
+        mkdir -p $THEMES_DIR/_source/scss/
+        mkdir -p $THEMES_DIR/_source/js/
+        mkdir -p $THEMES_DIR/_source/font/
+        mkdir -p $THEMES_DIR/_source/img/
+        mkdir -p $THEMES_DIR/assets/
         cp -r $DIR/_source/scss/*.scss $THEMES_DIR/_source/scss/
         cp -r $DIR/bower_components/normalize-scss/_normalize.scss $THEMES_DIR/_source/scss/
         cp -r $DIR/_source/js/ $THEMES_DIR/_source/js/
