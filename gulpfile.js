@@ -21,6 +21,7 @@ var gulp              = require('gulp'),
     path              = require('path'),
     yml               = require('js-yaml'),
     settings          = yml.safeLoad(fs.readFileSync('site.yml')),
+    settingsDefault   = yml.safeLoad(fs.readFileSync('provision/default.yml')),
     rootPath          = __dirname,
     themePath         = __dirname + '/wp-content/themes/' + settings.theme_dir_name,
     sourcePath        = themePath + '/_source',
@@ -62,12 +63,26 @@ var gulp              = require('gulp'),
         font    : {
             files: sourcePath + '/font/**/*',
             dest : assetsPath + '/font/'
-        },
-        archive : {
-            files: themePath + '/**',
-            dest : rootPath + '/'
         }
-    };
+    },
+    now               = new Date(),
+    formatDate        = function (date, format) {
+        if (!format) format = 'YYYY-MM-DD hh:mm:ss.SSS';
+        format = format.replace(/YYYY/g, date.getFullYear());
+        format = format.replace(/MM/g, ('0' + (date.getMonth() + 1)).slice(-2));
+        format = format.replace(/DD/g, ('0' + date.getDate()).slice(-2));
+        format = format.replace(/hh/g, ('0' + date.getHours()).slice(-2));
+        format = format.replace(/mm/g, ('0' + date.getMinutes()).slice(-2));
+        format = format.replace(/ss/g, ('0' + date.getSeconds()).slice(-2));
+        if (format.match(/S/g)) {
+            var milliSeconds = ('00' + date.getMilliseconds()).slice(-3);
+            var length = format.match(/S/g).length;
+            for (var i = 0; i < length; i++) format = format.replace(/S/, milliSeconds.substring(i, i + 1));
+        }
+        return format;
+    },
+    now               = new Date(),
+    date              = formatDate(now, 'YYYYMMDDhhmm');
 
 if(settings.bootstrap == true) {
     sources.scss.inc = rootPath + '/bower_components/bootstrap-sass/assets/stylesheets';
@@ -89,6 +104,10 @@ if(settings.underscore == true) {
 sources.js.files.push(
     sourcePath + '/js/script.js'
 );
+
+if (typeof settings.document_root == "undefined" || settings.document_root == "") {
+    settings.document_root = settingsDefault.document_root;
+}
 
 /**************************
  *****  Scss compile  *****
@@ -211,12 +230,67 @@ gulp.task('php', function () {
 /**********************
  *****  Archives  *****
  **********************/
-gulp.task('archive', function () {
-    return gulp.src(sources.archive.files, {base: themePath + '/.'})
-        .pipe($.ignore.exclude('_source'))
-        .pipe($.zip('wp_theme_' + settings.theme_dir_name + '.zip'))
+gulp.task('archive', ['backup:db', 'backup:del'], function () {
+    return gulp.src(rootPath + '/**', {base: rootPath + '/.'})
+        .pipe($.ignore.exclude([
+            'bower_components{,/**}',
+            'node_modules{,/**}',
+            'provision{,/**}',
+            '**/_source{,/**}',
+            '.vagrant{,/**}',
+            '.DS_Store',
+            '.csscomb.json',
+            '.editorconfig',
+            '.git',
+            '.gitignore',
+            '.svn',
+            '*.bak',
+            '*.log',
+            '*.swp',
+            'Desktop.ini',
+            'Movefile',
+            'README.md',
+            'Thumbs.db',
+            'Vagrantfile',
+            'bower.json',
+            'gulpfile.js',
+            'package.json',
+            'site.yml',
+            'wp-config.php',
+            'vavg',
+            'vavgtest',
+            'vavgtest_dev',
+            'test.sh'
+        ]))
+        .pipe($.zip('wp_' + settings.theme_dir_name + '_' + date + '.zip'))
         .pipe(gulp.dest(rootPath + '/'));
 });
+
+gulp.task('archive:theme', function () {
+    runSequence(['backup:db'], 'backup:mv');
+
+    return gulp.src(themePath + '/**', {base: themePath + '/.'})
+        .pipe($.ignore.exclude('_source{,/**}'))
+        .pipe($.zip('wp_' + settings.theme_dir_name + '_' + date + '.zip'))
+        .pipe(gulp.dest(rootPath + '/'));
+});
+
+
+/***********************
+ *****  DB Backup  *****
+ ***********************/
+gulp.task('backup:db', $.shell.task([
+    'vagrant ssh -c "cd ' + settings.document_root + ' && rm -rf ./backup_db/ && mkdir ./backup_db/ && wp db export ./backup_db/backup_' + date + '.sql && wp export --dir=./backup_db && logout"'
+]));
+
+gulp.task('backup:mv', $.shell.task([
+    'rm -rf ' + themePath + '/backup_db/',
+    'mv -f ./backup_db ' + themePath + '/'
+]));
+
+gulp.task('backup:del', $.shell.task([
+    'rm -rf ' + themePath + '/backup_db/'
+]));
 
 
 /**************************

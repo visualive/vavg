@@ -77,11 +77,11 @@ $ vagrant halt
 
 設定を変更する場合は、site.yml を編集する。VAVG 特有の設定は以下の表の通り。
 
-| 項目       | 説明                                                                                            | 初期値 |
-|:-----------|:------------------------------------------------------------------------------------------------|:-------|
-| underscore | WordPress Starter Theme の _s を使用するか否か                                                  | false  |
-| web_font   | ウェブフォントを使用するか否か。使用する場合は、genericons または fontawesome のどちらかを指定  | false  |
-| bootstrap  | CSS フレームワークの Bootstrap を使用するか否か。Bootstrap を使用しない場合は Foundation となる | false  |
+| 項目               | 説明                                                                                              | 初期値 |
+|:-------------------|:--------------------------------------------------------------------------------------------------|:-------|
+| wp\_starter\_theme | WordPress Starter Theme を使用するか否か。使用する場合は、underscore または sage のどちらかを指定 | false  |
+| web_font           | ウェブフォントを使用するか否か。使用する場合は、genericons または fontawesome のどちらかを指定    | false  |
+| bootstrap          | CSS フレームワークの Bootstrap を使用するか否か。Bootstrap を使用しない場合は Foundation となる   | false  |
 
 ### Options
 #### Install mode

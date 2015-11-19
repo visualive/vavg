@@ -23,9 +23,10 @@ parse_yaml() {
 }
 
 PROGNAME=$(basename $0)
-VERSION="2.0.0"
+VERSION="2.1.0"
 DIR=$(cd $(dirname $0); pwd)
 UNDERSCORE=$DIR/bower_components/_s
+SAGE=$DIR/bower_components/sage
 GENERICONS=$DIR/bower_components/Genericons
 FONTAWESOME=$DIR/bower_components/font-awesome
 BOOTSTRAP=$DIR/bower_components/bootstrap-sass/assets
@@ -75,7 +76,9 @@ do
     shift
 done
 
-vavg_install() {
+# TODO: いくつかのFunctionに分割
+# TODO: if を case に変えられるところは変える
+install_vavg() {
     echo "VAVG のセットアップを開始します。"
 
     mkdir $DIR/.tmp/
@@ -183,7 +186,7 @@ vavg_install() {
     cp -r $DIR/bower_components/normalize-scss/_normalize.scss $THEMES_DIR/_source/scss/
     cp -r $DIR/_source/js/ $THEMES_DIR/_source/js/
 
-    if [ $CONFIG_bootstrap == true ]; then
+    if [ $CONFIG_bootstrap == true || $CONFIG_wp_starter_theme == "sage" ]; then
         $DIR/node_modules/.bin/bower install bootstrap-sass-official
         # cp $BOOTSTRAP/stylesheets/_bootstrap-sprockets.scss $THEMES_DIR/_source/scss/
         cp $BOOTSTRAP/stylesheets/_bootstrap.scss $THEMES_DIR/_source/scss/
@@ -215,7 +218,7 @@ vavg_install() {
         cp $FONTAWESOME/fonts/* $THEMES_DIR/_source/font/fontawesome/
     fi
 
-    if [ $CONFIG_underscore == true ]; then
+    if [ $CONFIG_wp_starter_theme == "underscore" ]; then
         rm -rf $UNDERSCORE
         npm run bower install https://github.com/Automattic/_s.git
         mkdir -p $THEMES_DIR/languages/
@@ -227,11 +230,27 @@ vavg_install() {
         cp -r $UNDERSCORE/template-parts/*.php $THEMES_DIR/template-parts/
         cp $UNDERSCORE/languages/* $THEMES_DIR/languages/
         cp $UNDERSCORE/js/*.js $THEMES_DIR/_source/js/
+    elif [$CONFIG_wp_starter_theme == "sage"]; then
+        rm -rf $SAGE
+        npm run bower install https://github.com/roots/sage.git
+        mkdir -p $THEMES_DIR/lang/
+        mkdir -p $THEMES_DIR/lib/
+        mkdir -p $THEMES_DIR/templates/
+        cp -r $SAGE/*.php $THEMES_DIR/
+        cp -r $SAGE/*.md $THEMES_DIR/
+        cp -r $SAGE/lib/*.php $THEMES_DIR/lib/
+        cp -r $SAGE/templates/*.php $THEMES_DIR/templates/
+        cp -r $SAGE/assets/styles/ $THEMES_DIR/_source/scss/
+        cp $SAGE/lang/* $THEMES_DIR/lang/
+        cp $SAGE/assets/scripts/*.js $THEMES_DIR/_source/js/
+        mv $THEMES_DIR/_source/scss/main.scss $THEMES_DIR/_source/scss/style.scss
+        cp $DIR/_source/scss/sage/*.scss $THEMES_DIR/_source/scss/
+        rm -rf $THEMES_DIR/_source/scss/_editor.scss
     else
         cp -r $DIR/_source/wordpress-theme/default/ $THEMES_DIR/
     fi
 
-    if [ $CONFIG_underscore == false ] && [ $CONFIG_bootstrap == false ]; then
+    if [ $CONFIG_wp_starter_theme != "underscore" ] && [ $CONFIG_wp_starter_theme != "sage" ] && [ $CONFIG_bootstrap == false ]; then
         cp -r $DIR/_source/wordpress-theme/vavg/ $THEMES_DIR/
     fi
 
@@ -287,7 +306,7 @@ vavg_install() {
 }
 
 if [ "$FLAG_i" ]; then
-    vavg_install
+    install_vavg
 fi
 
 if [ "$FLAG_s" ]; then

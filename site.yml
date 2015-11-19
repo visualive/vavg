@@ -1,7 +1,8 @@
 #
 # Framework
 #
-underscore: false
+# underscore or sage
+wp_starter_theme: false
 bootstrap: false
 # genericons or fontawesome
 web_font: false

@@ -130,7 +130,7 @@ class VISUALIVE_THEME_SETUP extends VISUALIVE_SINGLETON {
 		 * This theme styles the visual editor to resemble the theme style,
 		 * specifically font, colors, icons, and column width.
 		 */
-		add_editor_style( 'style-editor.min.css' );
+		add_editor_style( 'editor-style.min.css' );
 
 		/**
 		 * Change front page title.
