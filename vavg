@@ -346,6 +346,8 @@ vavg_setup() {
         cp -r $DIR/_source/wordpress-theme/vavg/ $THEMES_DIR/
     fi
 
+    cd $DIR
+
     if [ "$(uname)" == "Darwin" ]; then
         if [ ! -x "`which VBoxManage`" ]; then
             echo "VirtualBox がインストールされていません。"
