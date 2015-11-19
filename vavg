@@ -337,8 +337,8 @@ vavg_setup() {
         "genericons")
             install_genericons
             ;;
-        "genericons")
-            install_genericons
+        "fontawesome")
+            install_fontawesome
             ;;
     esac
 
