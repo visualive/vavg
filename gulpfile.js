@@ -214,7 +214,7 @@ gulp.task('php', function () {
 gulp.task('archive', function () {
     return gulp.src(sources.archive.files, {base: themePath + '/.'})
         .pipe($.ignore.exclude('_source'))
-        .pipe($.zip('wp_theme_' + settings.themeDirName + '.zip'))
+        .pipe($.zip('wp_theme_' + settings.theme_dir_name + '.zip'))
         .pipe(gulp.dest(rootPath + '/'));
 });
 
@@ -250,7 +250,7 @@ gulp.task('clean', $.shell.task(
     [
         'rm -rf ' + rootPath   + '/*.zip',
         'rm -rf ' + rootPath   + '/.tmp/',
-        'rm -rf ' + rootPath   + '/wp_theme_' + settings.themeDirName + '/',
+        'rm -rf ' + rootPath   + '/wp_theme_' + settings.theme_dir_name + '/',
         'rm -rf ' + themePath  + '/*.css',
         'rm -rf ' + assetsPath + '/**/*/.gitkeep',
         'rm -rf ' + assetsPath + '/js/*',
