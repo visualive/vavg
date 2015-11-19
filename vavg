@@ -76,9 +76,60 @@ do
     shift
 done
 
+install_underscore() {
+    rm -rf $UNDERSCORE
+    npm run bower install https://github.com/Automattic/_s.git
+    mkdir -p $THEMES_DIR/languages/
+    mkdir -p $THEMES_DIR/inc/
+    mkdir -p $THEMES_DIR/template-parts/
+    cp -r $UNDERSCORE/*.php $THEMES_DIR/
+    cp -r $UNDERSCORE/*.md $THEMES_DIR/
+    cp -r $UNDERSCORE/inc/*.php $THEMES_DIR/inc/
+    cp -r $UNDERSCORE/template-parts/*.php $THEMES_DIR/template-parts/
+    cp $UNDERSCORE/languages/* $THEMES_DIR/languages/
+    cp $UNDERSCORE/js/*.js $THEMES_DIR/_source/js/
+}
+
+install_sage() {
+    rm -rf $SAGE
+    npm run bower install https://github.com/roots/sage.git
+    mkdir -p $THEMES_DIR/lang/
+    mkdir -p $THEMES_DIR/lib/
+    mkdir -p $THEMES_DIR/templates/
+    cp -r $SAGE/*.php $THEMES_DIR/
+    cp -r $SAGE/*.md $THEMES_DIR/
+    cp -r $SAGE/lib/*.php $THEMES_DIR/lib/
+    cp -r $SAGE/templates/*.php $THEMES_DIR/templates/
+    cp -r $SAGE/assets/styles/ $THEMES_DIR/_source/scss/
+    cp $SAGE/lang/* $THEMES_DIR/lang/
+    cp $SAGE/assets/scripts/*.js $THEMES_DIR/_source/js/
+    mv $THEMES_DIR/_source/scss/main.scss $THEMES_DIR/_source/scss/style.scss
+    cp $DIR/_source/scss/sage/*.scss $THEMES_DIR/_source/scss/
+    rm -rf $THEMES_DIR/_source/scss/_editor.scss
+}
+
+install_genericons() {
+    mkdir -p $DIR/.tmp/genericons/
+    curl -LOk http://genericons.com/wp-content/themes/a8c/genericons/genericons.zip
+    unzip genericons.zip -d $DIR/.tmp/genericons/
+    mkdir -p $THEMES_DIR/_source/font/genericons/
+    cp $DIR/.tmp/genericons/genericons/* $THEMES_DIR/_source/font/genericons/
+    rm -rf $THEMES_DIR/_source/font/genericons/*.css
+    cp $DIR/_source/scss/genericons/*.scss $THEMES_DIR/_source/scss/
+}
+
+install_fontawesome() {
+    $DIR/node_modules/.bin/bower install fontawesome
+    mkdir -p $THEMES_DIR/_source/scss/fontawesome/
+    mkdir -p $THEMES_DIR/_source/font/fontawesome/
+    cp $FONTAWESOME/scss/*.scss $THEMES_DIR/_source/scss/fontawesome/
+    mv $THEMES_DIR/_source/scss/fontawesome/font-awesome.scss $THEMES_DIR/_source/scss/_fontawesome.scss
+    cp $FONTAWESOME/fonts/* $THEMES_DIR/_source/font/fontawesome/
+}
+
 # TODO: いくつかのFunctionに分割
 # TODO: if を case に変えられるところは変える
-install_vavg() {
+vavg_setup() {
     echo "VAVG のセットアップを開始します。"
 
     mkdir $DIR/.tmp/
@@ -199,62 +250,30 @@ install_vavg() {
         cp $DIR/_source/scss/foundation/*.scss $THEMES_DIR/_source/scss/
     fi
 
-    if [ $CONFIG_web_font == "genericons" ]; then
-        mkdir -p $DIR/.tmp/genericons/
-        curl -LOk http://genericons.com/wp-content/themes/a8c/genericons/genericons.zip
-        unzip genericons.zip -d $DIR/.tmp/genericons/
-        mkdir -p $THEMES_DIR/_source/font/genericons/
-        cp $DIR/.tmp/genericons/genericons/* $THEMES_DIR/_source/font/genericons/
-        rm -rf $THEMES_DIR/_source/font/genericons/*.css
-        cp $DIR/_source/scss/genericons/*.scss $THEMES_DIR/_source/scss/
-    fi
+    case $CONFIG_web_font in
+        "genericons")
+            install_genericons
+            ;;
+        "genericons")
+            install_genericons
+            ;;
+    esac
 
-    if [ $CONFIG_web_font == "fontawesome" ]; then
-        $DIR/node_modules/.bin/bower install fontawesome
-        mkdir -p $THEMES_DIR/_source/scss/fontawesome/
-        mkdir -p $THEMES_DIR/_source/font/fontawesome/
-        cp $FONTAWESOME/scss/*.scss $THEMES_DIR/_source/scss/fontawesome/
-        mv $THEMES_DIR/_source/scss/fontawesome/font-awesome.scss $THEMES_DIR/_source/scss/_fontawesome.scss
-        cp $FONTAWESOME/fonts/* $THEMES_DIR/_source/font/fontawesome/
-    fi
-
-    if [ $CONFIG_wp_starter_theme == "underscore" ]; then
-        rm -rf $UNDERSCORE
-        npm run bower install https://github.com/Automattic/_s.git
-        mkdir -p $THEMES_DIR/languages/
-        mkdir -p $THEMES_DIR/inc/
-        mkdir -p $THEMES_DIR/template-parts/
-        cp -r $UNDERSCORE/*.php $THEMES_DIR/
-        cp -r $UNDERSCORE/*.md $THEMES_DIR/
-        cp -r $UNDERSCORE/inc/*.php $THEMES_DIR/inc/
-        cp -r $UNDERSCORE/template-parts/*.php $THEMES_DIR/template-parts/
-        cp $UNDERSCORE/languages/* $THEMES_DIR/languages/
-        cp $UNDERSCORE/js/*.js $THEMES_DIR/_source/js/
-    elif [$CONFIG_wp_starter_theme == "sage"]; then
-        rm -rf $SAGE
-        npm run bower install https://github.com/roots/sage.git
-        mkdir -p $THEMES_DIR/lang/
-        mkdir -p $THEMES_DIR/lib/
-        mkdir -p $THEMES_DIR/templates/
-        cp -r $SAGE/*.php $THEMES_DIR/
-        cp -r $SAGE/*.md $THEMES_DIR/
-        cp -r $SAGE/lib/*.php $THEMES_DIR/lib/
-        cp -r $SAGE/templates/*.php $THEMES_DIR/templates/
-        cp -r $SAGE/assets/styles/ $THEMES_DIR/_source/scss/
-        cp $SAGE/lang/* $THEMES_DIR/lang/
-        cp $SAGE/assets/scripts/*.js $THEMES_DIR/_source/js/
-        mv $THEMES_DIR/_source/scss/main.scss $THEMES_DIR/_source/scss/style.scss
-        cp $DIR/_source/scss/sage/*.scss $THEMES_DIR/_source/scss/
-        rm -rf $THEMES_DIR/_source/scss/_editor.scss
-    else
-        cp -r $DIR/_source/wordpress-theme/default/ $THEMES_DIR/
-    fi
+    case $CONFIG_wp_starter_theme in
+        "underscore")
+            install_underscore
+            ;;
+        "sage")
+            install_sage
+            ;;
+        *)
+            cp -r $DIR/_source/wordpress-theme/default/ $THEMES_DIR/
+            ;;
+    esac
 
     if [ $CONFIG_wp_starter_theme != "underscore" ] && [ $CONFIG_wp_starter_theme != "sage" ] && [ $CONFIG_bootstrap == false ]; then
         cp -r $DIR/_source/wordpress-theme/vavg/ $THEMES_DIR/
     fi
-
-    rm -rf $DIR/_source/
 
     if [ "$(uname)" == "Darwin" ]; then
         if [ ! -x "`which VBoxManage`" ]; then
@@ -302,12 +321,13 @@ install_vavg() {
     fi
 
     $DIR/node_modules/.bin/gulp install
+    rm -rf $DIR/_source/
 
     echo "VAVG のインストールが完了しました。"
 }
 
 if [ "$FLAG_i" ]; then
-    install_vavg
+    vavg_setup
 fi
 
 if [ "$FLAG_s" ]; then
