@@ -26,17 +26,31 @@ PROGNAME=$(basename $0)
 VERSION="2.1.0"
 POWER=$(vagrant status | grep running)
 DIR=$(cd $(dirname $0); pwd)
-UNDERSCORE=$DIR/bower_components/_s
-SAGE=$DIR/bower_components/sage
-GENERICONS=$DIR/bower_components/Genericons
-FONTAWESOME=$DIR/bower_components/font-awesome
-BOOTSTRAP=$DIR/bower_components/bootstrap-sass/assets
-FOUNDATION=$DIR/bower_components/foundation/scss
-WP_THEMES_DIR=$DIR/wp-content/themes
 
 eval $(parse_yaml $DIR/site.yml CONFIG_)
 
+WP_THEMES_DIR=$DIR/wp-content/themes
 THEMES_DIR=$WP_THEMES_DIR/$CONFIG_theme_dir_name
+BOOTSTRAP=$DIR/bower_components/bootstrap-sass/assets
+FOUNDATION=$DIR/bower_components/foundation/scss
+
+if [ $CONFIG_wp_starter_theme == "sage" ]; then
+    BOWER=$THEMES_DIR/node_modules/.bin/bower
+    GULP=$THEMES_DIR/node_modules/.bin/gulp
+    FONTAWESOME=$THEMES_DIR/bower_components/font-awesome
+    SOURCE_FONT=$THEMES_DIR/assets/fonts
+    SOURCE_SCSS=$THEMES_DIR/assets/styles
+    SOURCE_JS=$THEMES_DIR/assets/scripts
+    SOURCE_IMG=$THEMES_DIR/assets/images
+else
+    BOWER=$DIR/node_modules/.bin/bower
+    GULP=$DIR/node_modules/.bin/gulp
+    FONTAWESOME=$DIR/bower_components/font-awesome
+    SOURCE_FONT=$THEMES_DIR/_source/font
+    SOURCE_SCSS=$THEMES_DIR/_source/scss
+    SOURCE_JS=$THEMES_DIR/_source/js
+    SOURCE_IMG=$THEMES_DIR/_source/img
+fi
 
 usage() {
     echo "Usage: $PROGNAME [OPTIONS] FILE"
@@ -118,7 +132,7 @@ install_underscore() {
 
 install_sage() {
     rm -rf $DIR/.tmp/sage/
-    mkdir -p $DIR/.tmp/sage/
+    cd $DIR/.tmp/
     curl -LOk https://github.com/roots/sage/archive/master.zip
     unzip master.zip
     rm -rf master.zip
@@ -128,27 +142,46 @@ install_sage() {
 }
 
 install_genericons() {
+    mkdir $DIR/.tmp/
     rm -rf $DIR/.tmp/genericons/
-    mkdir -p $DIR/.tmp/genericons/
+    cd $DIR/.tmp/
     curl -LOk http://genericons.com/wp-content/themes/a8c/genericons/genericons.zip
     unzip genericons.zip -d $DIR/.tmp/genericons/
-    mkdir -p $THEMES_DIR/_source/font/genericons/
-    cp $DIR/.tmp/genericons/genericons/* $THEMES_DIR/_source/font/genericons/
-    rm -rf $THEMES_DIR/_source/font/genericons/*.css
-    cp $DIR/_source/scss/genericons/*.scss $THEMES_DIR/_source/scss/
+    mkdir -p $SOURCE_FONT/genericons/
+    cp $DIR/.tmp/genericons/genericons/* $SOURCE_FONT/genericons/
+    rm -rf $SOURCE_FONT/genericons/*.css
+    cp $DIR/_source/scss/genericons/*.scss $SOURCE_SCSS/
+
+    if [ $CONFIG_wp_starter_theme == "sage" ]; then
+        sed -i '' -e "s/\.\/assets\/font/\.\/dist\/fonts/" $SOURCE_SCSS/_genericons.scss
+    fi
+
+    rm -rf ./genericons/
 }
 
 install_fontawesome() {
-    $DIR/node_modules/.bin/bower install fontawesome
-    mkdir -p $THEMES_DIR/_source/scss/fontawesome/
-    mkdir -p $THEMES_DIR/_source/font/fontawesome/
-    cp $FONTAWESOME/scss/*.scss $THEMES_DIR/_source/scss/fontawesome/
-    mv $THEMES_DIR/_source/scss/fontawesome/font-awesome.scss $THEMES_DIR/_source/scss/_fontawesome.scss
-    cp $FONTAWESOME/fonts/* $THEMES_DIR/_source/font/fontawesome/
+    if [ $CONFIG_wp_starter_theme == "sage" ]; then
+        cd $THEMES_DIR
+    else
+        cd $DIR
+    fi
+
+    $BOWER install fontawesome
+    mkdir -p $SOURCE_SCSS/fontawesome/
+    mkdir -p $SOURCE_FONT/fontawesome/
+    cp $FONTAWESOME/scss/*.scss $SOURCE_SCSS/fontawesome/
+    mv $SOURCE_SCSS/fontawesome/font-awesome.scss $SOURCE_SCSS/_fontawesome.scss
+
+    if [ $CONFIG_wp_starter_theme != "sage" ]; then
+        sed -i '' -e "s/\.\.\/fonts/\.\/assets/font/" $SOURCE_SCSS/fontawesome/_variables.scss
+    fi
+
+    cp $FONTAWESOME/fonts/* $SOURCE_FONT/fontawesome/
 }
 
 # TODO: いくつかのFunctionに分割
 # TODO: if を case に変えられるところは変える
+# TODO: GULP と BOWER の変数を作成し if を減らす
 vavg_setup() {
     echo "VAVG のセットアップを開始します。"
 
@@ -258,6 +291,7 @@ vavg_setup() {
             cp -r $DIR/_source/wordpress-theme/default/ $THEMES_DIR/
             ;;
     esac
+
     if [ $CONFIG_wp_starter_theme == "sage" ]; then
         cd $THEMES_DIR/
     fi
@@ -267,37 +301,36 @@ vavg_setup() {
     if [ $CONFIG_wp_starter_theme == "sage" ]; then
         npm install bower --save-dev
         npm install gulp-zip --save-dev
-        $THEMES_DIR/node_modules/.bin/bower install
-    else
-        $DIR/node_modules/.bin/bower install
     fi
+
+    $BOWER install
 
     if [ $CONFIG_wp_starter_theme == "sage" ]; then
         cd $DIR/
     fi
 
     if [ $CONFIG_wp_starter_theme != "sage" ]; then
-        mkdir -p $THEMES_DIR/_source/scss/
-        mkdir -p $THEMES_DIR/_source/js/
-        mkdir -p $THEMES_DIR/_source/font/
-        mkdir -p $THEMES_DIR/_source/img/
+        mkdir -p $SOURCE_SCSS/
+        mkdir -p $SOURCE_JS/
+        mkdir -p $SOURCE_FONT/
+        mkdir -p $SOURCE_IMG/
         mkdir -p $THEMES_DIR/assets/
-        cp -r $DIR/_source/scss/*.scss $THEMES_DIR/_source/scss/
-        cp -r $DIR/bower_components/normalize-scss/_normalize.scss $THEMES_DIR/_source/scss/
-        cp -r $DIR/_source/js/ $THEMES_DIR/_source/js/
+        cp -r $DIR/_source/scss/*.scss $SOURCE_SCSS/
+        cp -r $DIR/bower_components/normalize-scss/_normalize.scss $SOURCE_SCSS/
+        cp -r $DIR/_source/js/ $SOURCE_JS/
     fi
 
     if [ $CONFIG_bootstrap == true ] && [ $CONFIG_wp_starter_theme != "sage" ]; then
-        $DIR/node_modules/.bin/bower install bootstrap-sass-official
+        $BOWER install bootstrap-sass-official
         # cp $BOOTSTRAP/stylesheets/_bootstrap-sprockets.scss $THEMES_DIR/_source/scss/
-        cp $BOOTSTRAP/stylesheets/_bootstrap.scss $THEMES_DIR/_source/scss/
-        cp -r $BOOTSTRAP/fonts/* $THEMES_DIR/_source/font/
-        cp $DIR/_source/scss/bootstrap/*.scss $THEMES_DIR/_source/scss/
+        cp $BOOTSTRAP/stylesheets/_bootstrap.scss $SOURCE_SCSS/
+        cp -r $BOOTSTRAP/fonts/* $SOURCE_FONT/
+        cp $DIR/_source/scss/bootstrap/*.scss $SOURCE_SCSS/
     elif [ $CONFIG_wp_starter_theme != "sage" ]; then
-        $DIR/node_modules/.bin/bower install foundation
-        cp $FOUNDATION/foundation.scss $THEMES_DIR/_source/scss/_foundation.scss
-        cp $FOUNDATION/foundation/_settings.scss $THEMES_DIR/_source/scss/_settings.scss
-        cp $DIR/_source/scss/foundation/*.scss $THEMES_DIR/_source/scss/
+        $BOWER install foundation
+        cp $FOUNDATION/foundation.scss $SOURCE_SCSS/_foundation.scss
+        cp $FOUNDATION/foundation/_settings.scss $SOURCE_SCSS/_settings.scss
+        cp $DIR/_source/scss/foundation/*.scss $SOURCE_SCSS/
     fi
 
     case $CONFIG_web_font in
@@ -360,10 +393,10 @@ vavg_setup() {
 
     if [ $CONFIG_wp_starter_theme == "sage" ]; then
         cd $THEMES_DIR/
-        $THEMES_DIR/node_modules/.bin/gulp
+        $GULP
         cd $DIR/
     else
-        $DIR/node_modules/.bin/gulp install
+        $GULP install
     fi
 
     rm -rf $DIR/_source/
@@ -384,10 +417,10 @@ if [ "$FLAG_start" ]; then
 
     if [ $CONFIG_wp_starter_theme == "sage" ]; then
         cd $THEMES_DIR/
-        $THEMES_DIR/node_modules/.bin/gulp
-        $THEMES_DIR/node_modules/.bin/gulp watch
+        $GULP
+        $GULP watch
     else
-        $DIR/node_modules/.bin/gulp default
+        $GULP default
     fi
 fi
 
@@ -402,10 +435,9 @@ if [ "$FLAG_backup" ]; then
 
     if [ $CONFIG_wp_starter_theme == "sage" ]; then
         cd $DIR/
-        $THEMES_DIR/node_modules/.bin/gulp archive
-    else
-        $DIR/node_modules/.bin/gulp archive
     fi
+
+    $GULP archive
 
     if [ ! -n "${POWER_OLD-}" ]; then
         vagrant halt
@@ -425,10 +457,9 @@ if [ "$FLAG_backup_theme" ]; then
 
     if [ $CONFIG_wp_starter_theme == "sage" ]; then
         cd $DIR/
-        $THEMES_DIR/node_modules/.bin/gulp archive:theme
-    else
-        $DIR/node_modules/.bin/gulp archive:theme
     fi
+
+    $GULP archive:theme
 
     if [ ! -n "${POWER_OLD-}" ]; then
         vagrant halt
@@ -448,10 +479,9 @@ if [ "$FLAG_supply" ]; then
 
     if [ $CONFIG_wp_starter_theme == "sage" ]; then
         cd $DIR/
-        $THEMES_DIR/node_modules/.bin/gulp supply
-    else
-        $DIR/node_modules/.bin/gulp supply
     fi
+
+    $GULP supply
 
     if [ ! -n "${POWER_OLD-}" ]; then
         vagrant halt
@@ -471,10 +501,9 @@ if [ "$FLAG_supply_theme" ]; then
 
     if [ $CONFIG_wp_starter_theme == "sage" ]; then
         cd $DIR/
-        $THEMES_DIR/node_modules/.bin/gulp supply:theme
-    else
-        $DIR/node_modules/.bin/gulp supply:theme
     fi
+
+    $GULP supply:theme
 
     if [ ! -n "${POWER_OLD-}" ]; then
         vagrant halt
