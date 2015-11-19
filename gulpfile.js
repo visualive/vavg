@@ -84,7 +84,7 @@ var gulp              = require('gulp'),
     now               = new Date(),
     date              = formatDate(now, 'YYYYMMDDhhmm');
 
-if(settings.bootstrap == true) {
+if(settings.bootstrap == true || settings.wp_starter_theme == "sage") {
     sources.scss.inc = rootPath + '/bower_components/bootstrap-sass/assets/stylesheets';
     sources.scss.px  = '14px';
 } else {
@@ -230,11 +230,50 @@ gulp.task('php', function () {
 /**********************
  *****  Archives  *****
  **********************/
-gulp.task('archive', ['backup:db', 'backup:del'], function () {
-    return gulp.src(rootPath + '/**', {base: rootPath + '/.'})
+gulp.task('archive', function () {
+    return runSequence('backup:db', 'backup:core');
+});
+
+gulp.task('archive:theme', function () {
+    return runSequence('backup:db', 'backup:mv', 'backup:theme');
+});
+
+
+/***********************
+ *****  DB Backup  *****
+ ***********************/
+gulp.task('backup:db', ['backup:del'], $.shell.task([
+    'vagrant ssh -c "cd ' + settings.document_root + ' && rm -rf ./backup_db/ && mkdir ./backup_db/ && wp db export ./backup_db/backup_' + date + '.sql && wp export --dir=./backup_db && logout"'
+]));
+
+gulp.task('backup:mv', $.shell.task([
+    'rm -rf ' + themePath + '/backup_db/',
+    'mv -f ./backup_db ' + themePath + '/'
+]));
+
+gulp.task('backup:del', $.shell.task([
+    'rm -rf ' + themePath + '/backup_db/',
+    'rm -rf ' + rootPath + '/backup_db/'
+]));
+
+gulp.task('backup:theme', function () {
+    return gulp.src(themePath + '/**', {base: themePath + '/.'})
         .pipe($.ignore.exclude([
             'bower_components{,/**}',
             'node_modules{,/**}',
+            '_source{,/**}'
+        ]))
+        .pipe($.zip('wp_theme_' + settings.theme_dir_name + '_' + date + '.zip'))
+        .pipe(gulp.dest(rootPath + '/'));
+});
+
+gulp.task('backup:core', function () {
+    return gulp.src(rootPath + '/**', {base: rootPath + '/.'})
+        .pipe($.ignore.exclude([
+            'bower_components{,/**}',
+            '**/bower_components{,/**}',
+            'node_modules{,/**}',
+            '**/node_modules{,/**}',
             'provision{,/**}',
             '**/_source{,/**}',
             '.vagrant{,/**}',
@@ -262,36 +301,9 @@ gulp.task('archive', ['backup:db', 'backup:del'], function () {
             'vavgtest_dev',
             'test.sh'
         ]))
-        .pipe($.zip('wp_' + settings.theme_dir_name + '_' + date + '.zip'))
+        .pipe($.zip('wp_core_' + settings.theme_dir_name + '_' + date + '.zip'))
         .pipe(gulp.dest(rootPath + '/'));
 });
-
-gulp.task('archive:theme', function () {
-    runSequence(['backup:db'], 'backup:mv');
-
-    return gulp.src(themePath + '/**', {base: themePath + '/.'})
-        .pipe($.ignore.exclude('_source{,/**}'))
-        .pipe($.zip('wp_' + settings.theme_dir_name + '_' + date + '.zip'))
-        .pipe(gulp.dest(rootPath + '/'));
-});
-
-
-/***********************
- *****  DB Backup  *****
- ***********************/
-gulp.task('backup:db', $.shell.task([
-    'vagrant ssh -c "cd ' + settings.document_root + ' && rm -rf ./backup_db/ && mkdir ./backup_db/ && wp db export ./backup_db/backup_' + date + '.sql && wp export --dir=./backup_db && logout"'
-]));
-
-gulp.task('backup:mv', $.shell.task([
-    'rm -rf ' + themePath + '/backup_db/',
-    'mv -f ./backup_db ' + themePath + '/'
-]));
-
-gulp.task('backup:del', $.shell.task([
-    'rm -rf ' + themePath + '/backup_db/'
-]));
-
 
 /**************************
  *****  Browser sync  *****
@@ -324,7 +336,6 @@ gulp.task('clean', $.shell.task(
     [
         'rm -rf ' + rootPath   + '/*.zip',
         'rm -rf ' + rootPath   + '/.tmp/',
-        'rm -rf ' + rootPath   + '/wp_theme_' + settings.theme_dir_name + '/',
         'rm -rf ' + themePath  + '/*.css',
         'rm -rf ' + assetsPath + '/**/*/.gitkeep',
         'rm -rf ' + assetsPath + '/js/*',
@@ -366,6 +377,10 @@ gulp.task('install', ['clear','clean'], function (cb) {
  ********************/
 gulp.task('supply', ['clear','clean'], function (cb) {
     return runSequence(['scss', 'js', 'js:ie', 'img', 'font'], 'archive', cb);
+});
+
+gulp.task('supply:theme', ['clear','clean'], function (cb) {
+    return runSequence(['scss', 'js', 'js:ie', 'img', 'font'], 'archive:theme', cb);
 });
 
 

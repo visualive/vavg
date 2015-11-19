@@ -84,20 +84,30 @@ $ vagrant halt
 | bootstrap          | CSS フレームワークの Bootstrap を使用するか否か。Bootstrap を使用しない場合は Foundation となる   | false  |
 
 ### Options
-#### Install mode
+
+| 項目 | 説明                                                                           |
+|:-----|:-------------------------------------------------------------------------------|
+| -h   | VAVG のヘルプを表示する                                                        |
+| -v   | VAVG のバージョンを表示する                                                    |
+| -i   | VCCW や Node module などをインストールする                                     |
+| -g   | VAVG をスタートさせる                                                          |
+| -b   | WordPress 全体とデータベースをバックアップする                                 |
+| -B   | 開発中のテーマとデータベースをバックアップする                                 |
+| -s   | Scss などを再コンパイルしたのち WordPress 全体とデータベースをバックアップする |
+| -S   | Scss などを再コンパイルしたのち 開発中のテーマとデータベースをバックアップする |
+
+#### Example
 
 ```
-$ ./vavg -i
-```
-
-#### Start mode
-
-```
-$ ./vavg -s
+$ ./vavg -h
 ```
 
 ### npm commands
-[VisuAlive Web Starter](https://github.com/kuck1u/visualive-web-starter) を参照。
+
+| コマンド        | 説明                                                                                                                         |
+|:----------------|------------------------------------------------------------------------------------------------------------------------------|
+| npm run bower   | `./node_modules/.bin/bower` のショートカット。例えば `npm run bower install` でパッケージをインストール可能                  |
+| npm run gulp    | `./node_modules/.bin/gulp` のショートカット。例えば `npm run gulp scss` で scss タスクを実行可能                             |
 
 ## Support OS
 
@@ -105,6 +115,9 @@ $ ./vavg -s
 * Windows: not tested
 
 ## Change log
+* v2.1.0  
+VAVG にオプションコマンドの追加。  
+WordPress スターターテーマ SAGE の選択を追加。
 * v2.0.0  
 VisuAlive Web Starter を移植。  
 _s 、ウェブフォント、Bootstrap の使用有無を選択できるように変更。

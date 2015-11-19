@@ -45,7 +45,11 @@ usage() {
     echo "  -h, Help"
     echo "  -v, Version"
     echo "  -i, Install"
-    echo "  -s, Start"
+    echo "  -g, Gulp default task & vagrant up"
+    echo "  -b, WordPress backup"
+    echo "  -B, Theme backup"
+    echo "  -s, Scss etc compile & WordPress backup"
+    echo "  -S, Scss etc compile & Theme backup"
     echo
     exit 1
 }
@@ -62,10 +66,26 @@ do
             exit 1
             ;;
         '-i' )
-            FLAG_i=1
+            FLAG_install=1
+            ;;
+        '-g' )
+            FLAG_start=1
+            shift 2
+            ;;
+        '-b' )
+            FLAG_backup=1
+            shift 2
+            ;;
+        '-B' )
+            FLAG_backup_theme=1
+            shift 2
             ;;
         '-s' )
-            FLAG_s=1
+            FLAG_supply=1
+            shift 2
+            ;;
+        '-S' )
+            FLAG_supply_theme=1
             shift 2
             ;;
         *)
@@ -77,38 +97,37 @@ do
 done
 
 install_underscore() {
-    rm -rf $UNDERSCORE
-    npm run bower install https://github.com/Automattic/_s.git
+    rm -rf $DIR/.tmp/underscore/
+    mkdir -p $DIR/.tmp/underscore/
     mkdir -p $THEMES_DIR/languages/
     mkdir -p $THEMES_DIR/inc/
     mkdir -p $THEMES_DIR/template-parts/
-    cp -r $UNDERSCORE/*.php $THEMES_DIR/
-    cp -r $UNDERSCORE/*.md $THEMES_DIR/
-    cp -r $UNDERSCORE/inc/*.php $THEMES_DIR/inc/
-    cp -r $UNDERSCORE/template-parts/*.php $THEMES_DIR/template-parts/
-    cp $UNDERSCORE/languages/* $THEMES_DIR/languages/
-    cp $UNDERSCORE/js/*.js $THEMES_DIR/_source/js/
+    curl -LOk https://github.com/Automattic/_s/archive/master.zip
+    unzip master.zip
+    rm -rf master.zip
+    cp -rf ./_s-master/* ./
+    rm -rf ./_s-master/
+    cp -r ./*.php $THEMES_DIR/
+    cp -r ./*.md $THEMES_DIR/
+    cp -r ./inc/*.php $THEMES_DIR/inc/
+    cp -r ./template-parts/*.php $THEMES_DIR/template-parts/
+    cp ./languages/* $THEMES_DIR/languages/
+    cp ./js/*.js $THEMES_DIR/_source/js/
 }
 
 install_sage() {
-    rm -rf $SAGE
-    npm run bower install https://github.com/roots/sage.git
-    mkdir -p $THEMES_DIR/lang/
-    mkdir -p $THEMES_DIR/lib/
-    mkdir -p $THEMES_DIR/templates/
-    cp -r $SAGE/*.php $THEMES_DIR/
-    cp -r $SAGE/*.md $THEMES_DIR/
-    cp -r $SAGE/lib/*.php $THEMES_DIR/lib/
-    cp -r $SAGE/templates/*.php $THEMES_DIR/templates/
-    cp -r $SAGE/assets/styles/ $THEMES_DIR/_source/scss/
-    cp $SAGE/lang/* $THEMES_DIR/lang/
-    cp $SAGE/assets/scripts/*.js $THEMES_DIR/_source/js/
-    mv $THEMES_DIR/_source/scss/main.scss $THEMES_DIR/_source/scss/style.scss
-    cp $DIR/_source/scss/sage/*.scss $THEMES_DIR/_source/scss/
-    rm -rf $THEMES_DIR/_source/scss/_editor.scss
+    rm -rf $DIR/.tmp/sage/
+    mkdir -p $DIR/.tmp/sage/
+    curl -LOk https://github.com/roots/sage/archive/master.zip
+    unzip master.zip
+    rm -rf master.zip
+    cp -rf ./sage-master/* $THEMES_DIR/
+    rm -rf ./sage-master/
+    sed -i '' -e "s/http\:\/\/example\.dev/http\:\/\/$CONFIG_hostname/" $THEMES_DIR/assets/manifest.json
 }
 
 install_genericons() {
+    rm -rf $DIR/.tmp/genericons/
     mkdir -p $DIR/.tmp/genericons/
     curl -LOk http://genericons.com/wp-content/themes/a8c/genericons/genericons.zip
     unzip genericons.zip -d $DIR/.tmp/genericons/
@@ -225,19 +244,50 @@ vavg_setup() {
         exit 1
     fi
 
+    mkdir -p $THEMES_DIR/
+
+    case $CONFIG_wp_starter_theme in
+        "underscore")
+            install_underscore
+            ;;
+        "sage")
+            install_sage
+            ;;
+        *)
+            cp -r $DIR/_source/wordpress-theme/default/ $THEMES_DIR/
+            ;;
+    esac
+    if [ $CONFIG_wp_starter_theme == "sage" ]; then
+        cd $THEMES_DIR/
+    fi
+
     npm install
-    $DIR/node_modules/.bin/bower install
 
-    mkdir -p $THEMES_DIR/_source/scss/
-    mkdir -p $THEMES_DIR/_source/js/
-    mkdir -p $THEMES_DIR/_source/font/
-    mkdir -p $THEMES_DIR/_source/img/
-    mkdir -p $THEMES_DIR/assets/
-    cp -r $DIR/_source/scss/*.scss $THEMES_DIR/_source/scss/
-    cp -r $DIR/bower_components/normalize-scss/_normalize.scss $THEMES_DIR/_source/scss/
-    cp -r $DIR/_source/js/ $THEMES_DIR/_source/js/
+    if [ $CONFIG_wp_starter_theme == "sage" ]; then
+        npm install bower --save-dev
+        npm install gulp-zip --save-dev
+        $THEMES_DIR/node_modules/.bin/bower install
+    else
+        $DIR/node_modules/.bin/bower install
+    fi
 
-    if [ $CONFIG_bootstrap == true ] || [ $CONFIG_wp_starter_theme == "sage" ]; then
+
+    if [ $CONFIG_wp_starter_theme == "sage" ]; then
+        cd $DIR/
+    fi
+
+    if [ $CONFIG_bootstrap == true ] || [ $CONFIG_wp_starter_theme != "sage" ]; then
+        mkdir $THEMES_DIR/_source/scss/
+        mkdir $THEMES_DIR/_source/js/
+        mkdir $THEMES_DIR/_source/font/
+        mkdir $THEMES_DIR/_source/img/
+        mkdir $THEMES_DIR/assets/
+        cp -r $DIR/_source/scss/*.scss $THEMES_DIR/_source/scss/
+        cp -r $DIR/bower_components/normalize-scss/_normalize.scss $THEMES_DIR/_source/scss/
+        cp -r $DIR/_source/js/ $THEMES_DIR/_source/js/
+    fi
+
+    if [ $CONFIG_bootstrap == true ] || [ $CONFIG_wp_starter_theme != "sage" ]; then
         $DIR/node_modules/.bin/bower install bootstrap-sass-official
         # cp $BOOTSTRAP/stylesheets/_bootstrap-sprockets.scss $THEMES_DIR/_source/scss/
         cp $BOOTSTRAP/stylesheets/_bootstrap.scss $THEMES_DIR/_source/scss/
@@ -256,18 +306,6 @@ vavg_setup() {
             ;;
         "genericons")
             install_genericons
-            ;;
-    esac
-
-    case $CONFIG_wp_starter_theme in
-        "underscore")
-            install_underscore
-            ;;
-        "sage")
-            install_sage
-            ;;
-        *)
-            cp -r $DIR/_source/wordpress-theme/default/ $THEMES_DIR/
             ;;
     esac
 
@@ -316,26 +354,91 @@ vavg_setup() {
 
     vagrant up
 
-    if [ ! "$FLAG_s" ]; then
+    if [ ! "$FLAG_start" ]; then
         vagrant halt
     fi
 
-    $DIR/node_modules/.bin/gulp install
+    if [ $CONFIG_wp_starter_theme == "sage" ]; then
+        cd $THEMES_DIR/
+        $THEMES_DIR/node_modules/.bin/gulp
+        cd $DIR/
+    else
+        $DIR/node_modules/.bin/gulp install
+    fi
+
     rm -rf $DIR/_source/
 
     echo "VAVG のインストールが完了しました。"
 }
 
-if [ "$FLAG_i" ]; then
+if [ "$FLAG_install" ]; then
     vavg_setup
 fi
 
-if [ "$FLAG_s" ]; then
+if [ "$FLAG_start" ]; then
     echo "VAVG を起動します。"
 
-    if [ ! "$FLAG_i" ]; then
+    if [ ! "$FLAG_install" ]; then
         vagrant up
     fi
 
-    $DIR/node_modules/.bin/gulp default
+    if [ $CONFIG_wp_starter_theme == "sage" ]; then
+        cd $THEMES_DIR/
+        $THEMES_DIR/node_modules/.bin/gulp
+        $THEMES_DIR/node_modules/.bin/gulp watch
+    else
+        $DIR/node_modules/.bin/gulp default
+    fi
+fi
+
+if [ "$FLAG_backup" ]; then
+    echo "WordPress のバックアップを開始しました。"
+
+    if [ $CONFIG_wp_starter_theme == "sage" ]; then
+        cd $DIR/
+        $THEMES_DIR/node_modules/.bin/gulp archive
+    else
+        $DIR/node_modules/.bin/gulp archive
+    fi
+
+    echo "WordPress のバックアップが終了しました。"
+fi
+
+if [ "$FLAG_backup_theme" ]; then
+    echo "テーマのバックアップを開始しました。"
+
+    if [ $CONFIG_wp_starter_theme == "sage" ]; then
+        cd $DIR/
+        $THEMES_DIR/node_modules/.bin/gulp archive:theme
+    else
+        $DIR/node_modules/.bin/gulp archive:theme
+    fi
+
+    echo "テーマのバックアップが終了しました。"
+fi
+
+if [ "$FLAG_supply" ]; then
+    echo "WordPress のバックアップを開始しました。"
+
+    if [ $CONFIG_wp_starter_theme == "sage" ]; then
+        cd $DIR/
+        $THEMES_DIR/node_modules/.bin/gulp supply
+    else
+        $DIR/node_modules/.bin/gulp supply
+    fi
+
+    echo "WordPress のバックアップが終了しました。"
+fi
+
+if [ "$FLAG_supply_theme" ]; then
+    echo "テーマのバックアップを開始しました。"
+
+    if [ $CONFIG_wp_starter_theme == "sage" ]; then
+        cd $DIR/
+        $THEMES_DIR/node_modules/.bin/gulp supply:theme
+    else
+        $DIR/node_modules/.bin/gulp supply:theme
+    fi
+
+    echo "テーマのバックアップが終了しました。"
 fi
