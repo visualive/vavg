@@ -128,6 +128,7 @@ install_underscore() {
     cp -r ./template-parts/*.php $THEMES_DIR/template-parts/
     cp ./languages/* $THEMES_DIR/languages/
     cp ./js/*.js $THEMES_DIR/_source/js/
+    cd $DIR
 }
 
 install_sage() {
@@ -139,6 +140,7 @@ install_sage() {
     cp -rf ./sage-master/* $THEMES_DIR/
     rm -rf ./sage-master/
     sed -i '' -e "s/http\:\/\/example\.dev/http\:\/\/$CONFIG_hostname/" $THEMES_DIR/assets/manifest.json
+    cd $DIR
 }
 
 install_genericons() {
@@ -157,6 +159,7 @@ install_genericons() {
     fi
 
     rm -rf ./genericons/
+    cd $DIR
 }
 
 install_fontawesome() {
@@ -177,6 +180,7 @@ install_fontawesome() {
     fi
 
     cp $FONTAWESOME/fonts/* $SOURCE_FONT/fontawesome/
+    cd $DIR
 }
 
 # TODO: いくつかのFunctionに分割
@@ -345,8 +349,6 @@ vavg_setup() {
     if [ $CONFIG_wp_starter_theme != "underscore" ] && [ $CONFIG_wp_starter_theme != "sage" ] && [ $CONFIG_bootstrap == false ]; then
         cp -r $DIR/_source/wordpress-theme/vavg/ $THEMES_DIR/
     fi
-
-    cd $DIR
 
     if [ "$(uname)" == "Darwin" ]; then
         if [ ! -x "`which VBoxManage`" ]; then
