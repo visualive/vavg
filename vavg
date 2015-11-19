@@ -254,7 +254,6 @@ install_vavg() {
         cp -r $DIR/_source/wordpress-theme/vavg/ $THEMES_DIR/
     fi
 
-    $DIR/node_modules/.bin/gulp install
     rm -rf $DIR/_source/
 
     if [ "$(uname)" == "Darwin" ]; then
@@ -301,6 +300,8 @@ install_vavg() {
     if [ ! "$FLAG_s" ]; then
         vagrant halt
     fi
+
+    $DIR/node_modules/.bin/gulp install
 
     echo "VAVG のインストールが完了しました。"
 }
