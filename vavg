@@ -24,6 +24,7 @@ parse_yaml() {
 
 PROGNAME=$(basename $0)
 VERSION="2.1.0"
+POWER=$(vagrant status | grep running)
 DIR=$(cd $(dirname $0); pwd)
 UNDERSCORE=$DIR/bower_components/_s
 SAGE=$DIR/bower_components/sage
@@ -377,7 +378,7 @@ fi
 if [ "$FLAG_start" ]; then
     echo "VAVG を起動します。"
 
-    if [ ! "$FLAG_install" ]; then
+    if [ ! "$FLAG_install" ] && [ ! -n "${POWER-}" ]; then
         vagrant up
     fi
 
@@ -393,11 +394,21 @@ fi
 if [ "$FLAG_backup" ]; then
     echo "WordPress のバックアップを開始しました。"
 
+    POWER_OLD=$POWER
+
+    if [ ! -n "${POWER_OLD-}" ]; then
+        vagrant up
+    fi
+
     if [ $CONFIG_wp_starter_theme == "sage" ]; then
         cd $DIR/
         $THEMES_DIR/node_modules/.bin/gulp archive
     else
         $DIR/node_modules/.bin/gulp archive
+    fi
+
+    if [ ! -n "${POWER_OLD-}" ]; then
+        vagrant halt
     fi
 
     echo "WordPress のバックアップが終了しました。"
@@ -406,11 +417,21 @@ fi
 if [ "$FLAG_backup_theme" ]; then
     echo "テーマのバックアップを開始しました。"
 
+    POWER_OLD=$POWER
+
+    if [ ! -n "${POWER_OLD-}" ]; then
+        vagrant up
+    fi
+
     if [ $CONFIG_wp_starter_theme == "sage" ]; then
         cd $DIR/
         $THEMES_DIR/node_modules/.bin/gulp archive:theme
     else
         $DIR/node_modules/.bin/gulp archive:theme
+    fi
+
+    if [ ! -n "${POWER_OLD-}" ]; then
+        vagrant halt
     fi
 
     echo "テーマのバックアップが終了しました。"
@@ -419,11 +440,21 @@ fi
 if [ "$FLAG_supply" ]; then
     echo "WordPress のバックアップを開始しました。"
 
+    POWER_OLD=$POWER
+
+    if [ ! -n "${POWER_OLD-}" ]; then
+        vagrant up
+    fi
+
     if [ $CONFIG_wp_starter_theme == "sage" ]; then
         cd $DIR/
         $THEMES_DIR/node_modules/.bin/gulp supply
     else
         $DIR/node_modules/.bin/gulp supply
+    fi
+
+    if [ ! -n "${POWER_OLD-}" ]; then
+        vagrant halt
     fi
 
     echo "WordPress のバックアップが終了しました。"
@@ -432,11 +463,21 @@ fi
 if [ "$FLAG_supply_theme" ]; then
     echo "テーマのバックアップを開始しました。"
 
+    POWER_OLD=$POWER
+
+    if [ ! -n "${POWER_OLD-}" ]; then
+        vagrant up
+    fi
+
     if [ $CONFIG_wp_starter_theme == "sage" ]; then
         cd $DIR/
         $THEMES_DIR/node_modules/.bin/gulp supply:theme
     else
         $DIR/node_modules/.bin/gulp supply:theme
+    fi
+
+    if [ ! -n "${POWER_OLD-}" ]; then
+        vagrant halt
     fi
 
     echo "テーマのバックアップが終了しました。"
