@@ -237,7 +237,7 @@ vavg_setup() {
     cp -r $DIR/bower_components/normalize-scss/_normalize.scss $THEMES_DIR/_source/scss/
     cp -r $DIR/_source/js/ $THEMES_DIR/_source/js/
 
-    if [ $CONFIG_bootstrap == true || $CONFIG_wp_starter_theme == "sage" ]; then
+    if [ $CONFIG_bootstrap == true ] || [ $CONFIG_wp_starter_theme == "sage" ]; then
         $DIR/node_modules/.bin/bower install bootstrap-sass-official
         # cp $BOOTSTRAP/stylesheets/_bootstrap-sprockets.scss $THEMES_DIR/_source/scss/
         cp $BOOTSTRAP/stylesheets/_bootstrap.scss $THEMES_DIR/_source/scss/
