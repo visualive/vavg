@@ -125,6 +125,7 @@ install_underscore() {
     mkdir -p $THEMES_DIR/languages/
     mkdir -p $THEMES_DIR/inc/
     mkdir -p $THEMES_DIR/template-parts/
+    mkdir -p $SOURCE_JS/
     curl -LOk https://github.com/Automattic/_s/archive/master.zip
     unzip master.zip
     rm -rf master.zip
@@ -133,8 +134,8 @@ install_underscore() {
     cp -r ./_s-master/inc/*.php $THEMES_DIR/inc/
     cp -r ./_s-master/template-parts/*.php $THEMES_DIR/template-parts/
     cp ./_s-master/languages/* $THEMES_DIR/languages/
-    cp ./_s-master/js/*.js $SOURCE_JS/js/
-    cp ./_s-master/js/*.js $ASSETS_JS/js/
+    cp ./_s-master/js/*.js $SOURCE_JS/
+    cp ./_s-master/js/*.js $ASSETS_JS/
     rm -rf ./_s-master/
     cd $DIR
 }
