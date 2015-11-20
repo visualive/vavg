@@ -126,6 +126,7 @@ install_underscore() {
     mkdir -p $THEMES_DIR/inc/
     mkdir -p $THEMES_DIR/template-parts/
     mkdir -p $SOURCE_JS/
+    mkdir -p $ASSETS_JS/
     curl -LOk https://github.com/Automattic/_s/archive/master.zip
     unzip master.zip
     rm -rf master.zip
@@ -146,6 +147,7 @@ install_sage() {
     curl -LOk https://github.com/roots/sage/archive/master.zip
     unzip master.zip
     rm -rf master.zip
+    mkdir -p $THEMES_DIR/
     cp -rf ./sage-master/* $THEMES_DIR/
     cp -r ./sage-master/*.md $THEMES_DIR/
     rm -rf ./sage-master/
@@ -292,8 +294,6 @@ vavg_setup() {
         exit 1
     fi
 
-    mkdir -p $THEMES_DIR/
-
     case $CONFIG_wp_starter_theme in
         "underscore")
             install_underscore
@@ -323,12 +323,15 @@ vavg_setup() {
         cd $DIR/
     fi
 
-    if [ $CONFIG_wp_starter_theme != "sage" ]; then
+    if [ $CONFIG_wp_starter_theme != "underscore" ] && [ $CONFIG_wp_starter_theme != "sage" ]; then
         mkdir -p $SOURCE_SCSS/
         mkdir -p $SOURCE_JS/
         mkdir -p $SOURCE_FONT/
         mkdir -p $SOURCE_IMG/
         mkdir -p $THEMES_DIR/assets/
+    fi
+
+    if [ $CONFIG_wp_starter_theme != "sage" ]; then
         cp -r $DIR/_source/scss/*.scss $SOURCE_SCSS/
         cp -r $DIR/bower_components/normalize-scss/_normalize.scss $SOURCE_SCSS/
         cp -r $DIR/_source/js/ $SOURCE_JS/
