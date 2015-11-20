@@ -2,10 +2,10 @@
 # Framework
 #
 # underscore or sage
-wp_starter_theme: underscore
+wp_starter_theme: false
 bootstrap: false
 # genericons or fontawesome
-web_font: genericons
+web_font: false
 
 #
 # WordPress Theme name
