@@ -2,7 +2,7 @@
 # Framework
 #
 # underscore or sage
-wp_starter_theme: sage
+wp_starter_theme: underscore
 bootstrap: false
 # genericons or fontawesome
 web_font: fontawesome

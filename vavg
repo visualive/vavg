@@ -218,7 +218,7 @@ vavg_setup() {
 
     if [ ! -x "`which sass`" ]; then
         if [ ! -x "`which sass`" ] && [ -x "`which gem`" ]; then
-            FLAG_sass=1
+            local FLAG_sass=1
         fi
 
         if [ "$FLAG_sass" ] && [ "$(uname)" == "Darwin" ]; then
@@ -241,7 +241,7 @@ vavg_setup() {
 
     if [ ! -x "`which compass`" ]; then
         if [ ! -x "`which compass`" ] && [ -x "`which gem`" ]; then
-            FLAG_compass=1
+            local FLAG_compass=1
         fi
 
         if [ "$FLAG_compass" ] && [ "$(uname)" == "Darwin" ]; then
@@ -431,9 +431,7 @@ fi
 if [ "$FLAG_backup" ]; then
     echo "WordPress のバックアップを開始しました。"
 
-    POWER_OLD=$POWER
-
-    if [ ! -n "${POWER_OLD-}" ]; then
+    if [ ! -n "${POWER-}" ]; then
         vagrant up
     fi
 
@@ -443,7 +441,7 @@ if [ "$FLAG_backup" ]; then
 
     $GULP archive
 
-    if [ ! -n "${POWER_OLD-}" ]; then
+    if [ ! -n "${POWER-}" ]; then
         vagrant halt
     fi
 
@@ -453,9 +451,7 @@ fi
 if [ "$FLAG_backup_theme" ]; then
     echo "テーマのバックアップを開始しました。"
 
-    POWER_OLD=$POWER
-
-    if [ ! -n "${POWER_OLD-}" ]; then
+    if [ ! -n "${POWER-}" ]; then
         vagrant up
     fi
 
@@ -465,7 +461,7 @@ if [ "$FLAG_backup_theme" ]; then
 
     $GULP archive:theme
 
-    if [ ! -n "${POWER_OLD-}" ]; then
+    if [ ! -n "${POWER-}" ]; then
         vagrant halt
     fi
 
@@ -475,9 +471,7 @@ fi
 if [ "$FLAG_supply" ]; then
     echo "WordPress のバックアップを開始しました。"
 
-    POWER_OLD=$POWER
-
-    if [ ! -n "${POWER_OLD-}" ]; then
+    if [ ! -n "${POWER-}" ]; then
         vagrant up
     fi
 
@@ -487,7 +481,7 @@ if [ "$FLAG_supply" ]; then
 
     $GULP supply
 
-    if [ ! -n "${POWER_OLD-}" ]; then
+    if [ ! -n "${POWER-}" ]; then
         vagrant halt
     fi
 
@@ -497,9 +491,7 @@ fi
 if [ "$FLAG_supply_theme" ]; then
     echo "テーマのバックアップを開始しました。"
 
-    POWER_OLD=$POWER
-
-    if [ ! -n "${POWER_OLD-}" ]; then
+    if [ ! -n "${POWER-}" ]; then
         vagrant up
     fi
 
@@ -509,7 +501,7 @@ if [ "$FLAG_supply_theme" ]; then
 
     $GULP supply:theme
 
-    if [ ! -n "${POWER_OLD-}" ]; then
+    if [ ! -n "${POWER-}" ]; then
         vagrant halt
     fi
 
