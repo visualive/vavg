@@ -125,7 +125,10 @@ install_underscore() {
     mkdir -p $THEMES_DIR/languages/
     mkdir -p $THEMES_DIR/inc/
     mkdir -p $THEMES_DIR/template-parts/
+    mkdir -p $SOURCE_SCSS/
     mkdir -p $SOURCE_JS/
+    mkdir -p $SOURCE_FONT/
+    mkdir -p $SOURCE_IMG/
     mkdir -p $ASSETS_JS/
     curl -LOk https://github.com/Automattic/_s/archive/master.zip
     unzip master.zip
