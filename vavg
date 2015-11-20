@@ -305,6 +305,11 @@ vavg_setup() {
             install_sage
             ;;
         *)
+            mkdir -p $SOURCE_SCSS/
+            mkdir -p $SOURCE_JS/
+            mkdir -p $SOURCE_FONT/
+            mkdir -p $SOURCE_IMG/
+            mkdir -p $THEMES_DIR/assets/
             cp -r $DIR/_source/wordpress-theme/default/ $THEMES_DIR/
             ;;
     esac
@@ -324,14 +329,6 @@ vavg_setup() {
 
     if [ $CONFIG_wp_starter_theme == "sage" ]; then
         cd $DIR/
-    fi
-
-    if [ $CONFIG_wp_starter_theme != "underscore" ] && [ $CONFIG_wp_starter_theme != "sage" ]; then
-        mkdir -p $SOURCE_SCSS/
-        mkdir -p $SOURCE_JS/
-        mkdir -p $SOURCE_FONT/
-        mkdir -p $SOURCE_IMG/
-        mkdir -p $THEMES_DIR/assets/
     fi
 
     if [ $CONFIG_wp_starter_theme != "sage" ]; then
