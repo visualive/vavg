@@ -5,7 +5,7 @@
 wp_starter_theme: underscore
 bootstrap: false
 # genericons or fontawesome
-web_font: fontawesome
+web_font: genericons
 
 #
 # WordPress Theme name
