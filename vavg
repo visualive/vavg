@@ -42,6 +42,10 @@ if [ $CONFIG_wp_starter_theme == "sage" ]; then
     SOURCE_SCSS=$THEMES_DIR/assets/styles
     SOURCE_JS=$THEMES_DIR/assets/scripts
     SOURCE_IMG=$THEMES_DIR/assets/images
+    ASSETS_FONT=$THEMES_DIR/dist/fonts
+    ASSETS_SCSS=$THEMES_DIR/dist/styles
+    ASSETS_JS=$THEMES_DIR/dist/scripts
+    ASSETS_IMG=$THEMES_DIR/dist/images
 else
     BOWER=$DIR/node_modules/.bin/bower
     GULP=$DIR/node_modules/.bin/gulp
@@ -50,6 +54,10 @@ else
     SOURCE_SCSS=$THEMES_DIR/_source/scss
     SOURCE_JS=$THEMES_DIR/_source/js
     SOURCE_IMG=$THEMES_DIR/_source/img
+    ASSETS_FONT=$THEMES_DIR/assets/font
+    ASSETS_SCSS=$THEMES_DIR/assets/scss
+    ASSETS_JS=$THEMES_DIR/assets/js
+    ASSETS_IMG=$THEMES_DIR/assets/img
 fi
 
 usage() {
@@ -112,32 +120,33 @@ do
 done
 
 install_underscore() {
-    rm -rf $DIR/.tmp/underscore/
-    mkdir -p $DIR/.tmp/underscore/
+    rm -rf $DIR/.tmp/_s-master/
+    cd $DIR/.tmp/
     mkdir -p $THEMES_DIR/languages/
     mkdir -p $THEMES_DIR/inc/
     mkdir -p $THEMES_DIR/template-parts/
     curl -LOk https://github.com/Automattic/_s/archive/master.zip
     unzip master.zip
     rm -rf master.zip
-    cp -rf ./_s-master/* ./
+    cp -r ./_s-master/*.php $THEMES_DIR/
+    cp -r ./_s-master/*.md $THEMES_DIR/
+    cp -r ./_s-master/inc/*.php $THEMES_DIR/inc/
+    cp -r ./_s-master/template-parts/*.php $THEMES_DIR/template-parts/
+    cp ./_s-master/languages/* $THEMES_DIR/languages/
+    cp ./_s-master/js/*.js $SOURCE_JS/js/
+    cp ./_s-master/js/*.js $ASSETS_JS/js/
     rm -rf ./_s-master/
-    cp -r ./*.php $THEMES_DIR/
-    cp -r ./*.md $THEMES_DIR/
-    cp -r ./inc/*.php $THEMES_DIR/inc/
-    cp -r ./template-parts/*.php $THEMES_DIR/template-parts/
-    cp ./languages/* $THEMES_DIR/languages/
-    cp ./js/*.js $THEMES_DIR/_source/js/
     cd $DIR
 }
 
 install_sage() {
-    rm -rf $DIR/.tmp/sage/
+    rm -rf $DIR/.tmp/sage-master/
     cd $DIR/.tmp/
     curl -LOk https://github.com/roots/sage/archive/master.zip
     unzip master.zip
     rm -rf master.zip
     cp -rf ./sage-master/* $THEMES_DIR/
+    cp -r ./sage-master/*.md $THEMES_DIR/
     rm -rf ./sage-master/
     sed -i '' -e "s/http\:\/\/example\.dev/http\:\/\/$CONFIG_hostname/" $THEMES_DIR/assets/manifest.json
     cd $DIR
