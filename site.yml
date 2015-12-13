@@ -1,4 +1,15 @@
 #
+# Virtual Machine Settings
+#
+memory: 512
+cpus: 1
+
+#
+# phpenv
+#
+php_version: default
+
+#
 # Framework
 #
 # underscore or sage
@@ -19,17 +30,18 @@ theme_dir_name: vavg
 theme: ''
 
 #
-# Virtual Machine Settings
-#
-memory: 2018
-cpus: 2
-
-#
 # Network Settings
 #
 hostname: vavg.example.com
 ip: 192.168.33.10
 sync_folder: .
+
+#
+# WordPress Path
+#
+document_root: '/var/www/wordpress'
+wp_home: ''     # Path to the WP_HOME like "wp"
+wp_siteurl: ''  # Path to the WP_SITEURL like "wp"
 
 #
 # WordPress Database

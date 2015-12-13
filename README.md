@@ -28,14 +28,10 @@ Windows での作業は全て Cygwin で行ってください。ただし、起�
 
 ```
 # Master
-$ curl -LOk https://gist.githubusercontent.com/kuck1u/8d876e888ad0a0aa9be5/raw/1e863de448d297b318641c35f35564a711dfdf6f/vavgtest && \
-chmod u+x ./vavgtest && \
-./vavgtest
+$ curl -L https://goo.gl/uwQzd1 | sh
 
 # Develop
-$ curl -LOk https://gist.githubusercontent.com/kuck1u/8d876e888ad0a0aa9be5/raw/1e863de448d297b318641c35f35564a711dfdf6f/vavgtest_dev && \
-chmod u+x ./vavgtest_dev && \
-./vavgtest_dev
+$ curl -L https://goo.gl/IKiqt4 | sh
 ```
 
 ### VAVG を起動させる
@@ -45,12 +41,7 @@ chmod u+x ./vavgtest_dev && \
 $ cd /Users/YOURNAME/PhpstormProjects/TEST/
 
 # VCCW + Gulp 1発起動スクリプト VAVG をダウンロード
-$ wget http://github.com/kuck1u/vavg/archive/master.zip && \
-unzip ./master.zip && \
-rm -rf ./master.zip && \
-mv ./vavg-master/* ./vavg-master/.[^\.]* ./ && \
-rm -rf ./vavg-master && \
-chmod u+x ./vavg
+$ curl -L https://goo.gl/GJfacX | sh
 
 # 設定ファイルを編集
 $ vi ./site.yml
@@ -115,6 +106,8 @@ $ ./vavg -h
 * Windows: not tested
 
 ## Change log
+* v2.1.1  
+WordPress のサブディレクトリインストールへの対応。
 * v2.1.0  
 VAVG にオプションコマンドの追加。  
 WordPress スターターテーマ SAGE の選択を追加。
