@@ -95,6 +95,7 @@ plugins:
   - mw-wp-form
   - rewrite-rules-inspector
   - simply-show-ids
+  - siteguard
   - smart-custom-fields
   - theme-check
   - user-switching

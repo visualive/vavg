@@ -29,7 +29,6 @@ if ( settings.wp_home != settings.wp_siteurl ) {
     themePath = settings.wp_siteurl + "/" + themePath;
 }
 
-
 var sourcePath        = themePath + "/_source",
     assetsPath        = themePath + "/assets",
     sources           = {
