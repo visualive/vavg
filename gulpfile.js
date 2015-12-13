@@ -25,7 +25,7 @@ var gulp              = require("gulp"),
     rootPath          = __dirname,
     themePath         = "wp-content/themes/" + settings.theme_dir_name;
 
-if ( settings.wp_home == settings.wp_siteurl ) {
+if ( settings.wp_home != settings.wp_siteurl ) {
     themePath = settings.wp_siteurl + "/" + themePath;
 }
 
