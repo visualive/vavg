@@ -299,6 +299,8 @@ gulp.task("backup:core", function () {
             ".editorconfig",
             ".git",
             ".gitignore",
+            ".jshintignore",
+            ".jshintrc",
             ".svn",
             "*.bak",
             "*.log",
