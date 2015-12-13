@@ -23,8 +23,14 @@ var gulp              = require("gulp"),
     settings          = yml.safeLoad(fs.readFileSync("site.yml")),
     settingsDefault   = yml.safeLoad(fs.readFileSync("provision/default.yml")),
     rootPath          = __dirname,
-    themePath         = "wp-content/themes/" + settings.theme_dir_name,
-    sourcePath        = themePath + "/_source",
+    themePath         = "wp-content/themes/" + settings.theme_dir_name;
+
+if ( settings.wp_home == settings.wp_siteurl ) {
+    themePath = settings.wp_siteurl + "/" + themePath;
+}
+
+
+var sourcePath        = themePath + "/_source",
     assetsPath        = themePath + "/assets",
     sources           = {
         scss    : {
